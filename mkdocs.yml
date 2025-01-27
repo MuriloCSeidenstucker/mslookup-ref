@@ -1,7 +1,7 @@
 site_name: MSLOOKUP
-repo_url: https://github.com/MuriloCSeidenstucker/mslookup/
+repo_url: https://github.com/MuriloCSeidenstucker/mslookup-ref
 repo_name: mslookup
-# edit_uri: tree/main/docs
+edit_uri: tree/main/docs
 
 theme:
   name: material
