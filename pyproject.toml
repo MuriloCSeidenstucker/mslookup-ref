@@ -16,6 +16,7 @@ isort = "^5.13.2"
 taskipy = "^1.14.1"
 black = "^24.10.0"
 pylint = "^3.3.3"
+pre-commit = "^4.1.0"
 
 
 [tool.poetry.group.doc.dependencies]
