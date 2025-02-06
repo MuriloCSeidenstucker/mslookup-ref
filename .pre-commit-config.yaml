@@ -1,19 +1,32 @@
 repos:
-  - repo: local
+-   repo: https://gitlab.com/vojko.pribudic.foss/pre-commit-update
+    rev: v0.6.1
     hooks:
-      - id: pylint
+    -   id: pre-commit-update
+-   repo: https://github.com/python-poetry/poetry
+    rev: 2.0.1
+    hooks:
+    -   id: poetry-check
+    -   id: poetry-lock
+    -   id: poetry-install
+-   repo: https://github.com/python-poetry/poetry-plugin-export
+    rev: 1.9.0
+    hooks:
+    -   id: poetry-export
+        args: ["--all-groups", --without-hashes, "-f", "requirements.txt", "-o", "requirements.txt"]
+        verbose: true
+-   repo: local
+    hooks:
+    -   id: pylint
         name: pylint
         entry: pylint
         language: system
         types: [python]
-        args:
-          [
-            "-rn",
-            "-sn",
-            "--load-plugins=pylint.extensions.docparams",
-          ]
-      - id: task-test
+        args: ["-rn", "-sn", "--load-plugins=pylint.extensions.docparams"]
+-   repo: local
+    hooks:
+    -   id: task-test
         name: task-test
-        entry: task
+        entry: task test
         language: system
-        args: ["pre_test"]
+        types: [python]

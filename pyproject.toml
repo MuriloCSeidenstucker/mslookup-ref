@@ -1,13 +1,17 @@
-[tool.poetry]
+[project]
 name = "mslookup-ref"
 version = "0.1.0"
 description = ""
-authors = ["Murilo Seidenstucker <murilocampos.004@gmail.com>"]
+authors = [
+    { name = "Murilo Seidenstucker", email = "murilocampos.004@gmail.com" }
+]
 readme = "README.md"
+requires-python = "^3.12"
+dependencies = []
 
-[tool.poetry.dependencies]
-python = "^3.12"
-
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.4"
@@ -18,15 +22,10 @@ black = "^24.10.0"
 pylint = "^3.3.3"
 pre-commit = "^4.1.0"
 
-
 [tool.poetry.group.doc.dependencies]
 mkdocs-material = "^9.5.50"
 mkdocstrings = "^0.27.0"
 mkdocstrings-python = "^1.13.0"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
 pythonpath = "."
