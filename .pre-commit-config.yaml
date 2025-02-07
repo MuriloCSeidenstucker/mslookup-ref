@@ -23,7 +23,7 @@ repos:
         entry: pylint
         language: system
         types: [python]
-        args: ["-rn", "-sn", "--load-plugins=pylint.extensions.docparams"]
+        args: ["-rn", "-sn", "--rcfile=.pylintrc", "--load-plugins=pylint.extensions.docparams"]
 -   repo: local
     hooks:
     -   id: task-test
