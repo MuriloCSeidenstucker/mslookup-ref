@@ -13,6 +13,7 @@ repos:
     rev: 1.9.0
     hooks:
     -   id: poetry-export
+        entry: poetry export
         args: ["--all-groups", "--without-hashes", "-f", "requirements.txt", "-o", "requirements.txt"]
         verbose: true
 -   repo: local
