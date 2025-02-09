@@ -1,6 +1,6 @@
 # pylint: disable=C0209:consider-using-f-string
 
-from sqlalchemy import create_engine
+from sqlalchemy import Engine, create_engine
 from sqlalchemy.orm import sessionmaker
 
 
@@ -14,7 +14,7 @@ class DBConnectionHandler:
         self.__engine = self.__create_database_engine()
         self.session = None
 
-    def __create_database_engine(self):
+    def __create_database_engine(self) -> Engine:
         """Cria e retorna um objeto de engine do SQLAlchemy.
 
         Returns:
@@ -23,7 +23,7 @@ class DBConnectionHandler:
         engine = create_engine(self.__connection_string)
         return engine
 
-    def get_engine(self):
+    def get_engine(self) -> Engine:
         """Retorna a engine do banco de dados.
 
         Returns:
@@ -31,7 +31,7 @@ class DBConnectionHandler:
         """
         return self.__engine
 
-    def __enter__(self):
+    def __enter__(self) -> "DBConnectionHandler":
         """Inicia uma sessão no banco de dados.
 
         Returns:

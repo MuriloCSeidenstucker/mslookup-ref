@@ -1,5 +1,7 @@
 # pylint: disable=R0903:too-few-public-methods
 
+from typing import Any
+
 from mslookup_ref.infra.db.entities.medicines import Medicines
 from mslookup_ref.infra.db.settings import DBConnectionHandler
 
@@ -8,7 +10,7 @@ class MedicinesRepository:
     """Repositório para operações no banco de dados relacionadas a medicamentos."""
 
     @classmethod
-    def insert_medicine(cls, **kwargs) -> None:
+    def insert_medicine(cls, **kwargs: dict[str, Any]) -> None:
         """Insere um novo registro de medicamento no banco de dados.
 
         Args:
