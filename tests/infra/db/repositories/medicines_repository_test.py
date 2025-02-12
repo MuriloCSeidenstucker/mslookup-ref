@@ -1,6 +1,11 @@
 import pytest
+from sqlalchemy import text
 
 from mslookup_ref.infra.db.repositories import MedicinesRepository
+from mslookup_ref.infra.db.settings.connection import DBConnectionHandler
+
+db_connection_handler = DBConnectionHandler()
+connection = db_connection_handler.get_engine().connect()
 
 
 @pytest.mark.skip(reason="sensitive test")
@@ -23,3 +28,23 @@ def test_insert_medicine():
 
     medicines_repository = MedicinesRepository()
     medicines_repository.insert_medicine(**mocked_medicine)
+
+    sql = f"""
+        SELECT * FROM medicines
+        WHERE product = '{mocked_medicine["product"]}'
+        AND cnpj = {mocked_medicine["cnpj"]}
+    """
+    response = connection.execute(text(sql))
+    registry = response.fetchall()[0]
+
+    assert registry.product == mocked_medicine["product"]
+    assert registry.cnpj == mocked_medicine["cnpj"]
+
+    connection.execute(
+        text(
+            f"""
+        DELETE FROM medicines WHERE id = {registry.id}
+    """
+        )
+    )
+    connection.commit()
