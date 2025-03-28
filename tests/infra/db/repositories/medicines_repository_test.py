@@ -10,20 +10,41 @@ connection = db_connection_handler.get_engine().connect()
 
 @pytest.mark.skip(reason="sensitive test")
 def test_insert_medicine():
-    """Teste para verificar a inserção de um novo medicamento no banco de dados.
+    """
+    Testa a inserção de um novo medicamento no banco de dados via MedicinesRepository.
 
-    Skipped:
-        Este teste está sendo ignorado devido a questões sensíveis relacionadas ao banco de dados.
+    Verifica se o método insert_medicine insere corretamente os dados de um medicamento
+    no banco de dados e se os valores inseridos podem ser recuperados conforme esperado.
+
+    Args:
+        Nenhum argumento é recebido diretamente, mas o teste utiliza:
+            - connection: Objeto de conexão com o banco de dados (assumido importado).
+            - text: Função para criar objetos de texto SQL (assumida importada).
+
+    Raises:
+        AssertionError: Se os valores inseridos não corresponderem aos mockados.
+        sqlalchemy.exc.SQLAlchemyError: Possível falha na execução das queries SQL.
+        IndexError: Se nenhum registro for encontrado na consulta.
+
+    Examples:
+        Execute o teste com:
+            task test
+
+    Note:
+        - Teste marcado como skip devido a dados sensíveis (@pytest.mark.skip).
+        - Requer conexão ativa com banco de dados.
+        - Assume a existência da tabela 'medicines' e da classe MedicinesRepository.
+        - Realiza limpeza dos dados inseridos após a execução.
     """
     mocked_medicine = {
-        "id": 1134301010036,
-        "product": "PARACETAMOL",
-        "substance": "PARACETAMOL",
-        "presentation": "500 MG COM BL AL PLAS AMB X 500",
-        "product_type": "Genérico",
-        "ean": 7898123905141,
-        "cnpj": 19570720000110,
-        "laboratorie": "HIPOLABOR FARMACEUTICA LTDA",
+        "id": 1111111111111,
+        "product": "product1",
+        "substance": "substance1;substance2;substance3",
+        "presentation": "presentation1",
+        "product_type": "product_type1",
+        "ean": 1111111111111,
+        "cnpj": 11111111111111,
+        "laboratorie": "laboratorie1",
     }
 
     medicines_repository = MedicinesRepository()
@@ -37,6 +58,7 @@ def test_insert_medicine():
     response = connection.execute(text(sql))
     registry = response.fetchall()[0]
 
+    assert registry.id == mocked_medicine["id"]
     assert registry.product == mocked_medicine["product"]
     assert registry.cnpj == mocked_medicine["cnpj"]
 
@@ -44,6 +66,75 @@ def test_insert_medicine():
         text(
             f"""
         DELETE FROM medicines WHERE id = {registry.id}
+    """
+        )
+    )
+    connection.commit()
+
+
+@pytest.mark.skip(reason="sensitive test")
+def test_select_medicine():
+    """Testa a funcionalidade de seleção de medicamentos no MedicinesRepository.
+
+    Este teste verifica a inserção e recuperação correta de dados de medicamentos,
+    garantindo que o MedicinesRepository retorne os valores esperados.
+
+    Args:
+        Nenhum argumento é recebido diretamente, mas o teste utiliza:
+            - connection: Objeto de conexão com o banco de dados (assumido importado)
+            - text: Função para criar objetos de texto SQL (assumida importada)
+
+    Raises:
+        AssertionError: Se os valores retornados não corresponderem aos mockados.
+        sqlalchemy.exc.SQLAlchemyError: Possível se houver falha na execução SQL.
+
+    Examples:
+        Este é um teste pytest e deve ser executado com o comando:
+            task test
+
+    Note:
+        - Teste marcado como skip por ser sensível (@pytest.mark.skip)
+        - Requer conexão ativa com banco de dados
+        - Assume a existência da tabela 'medicines' e da classe MedicinesRepository
+        - Realiza limpeza dos dados inseridos após execução
+    """
+    mocked_medicine = {
+        "id": 1111111111112,
+        "product": "product1",
+        "substance": "substance1;substance2;substance3",
+        "presentation": "presentation1",
+        "product_type": "product_type1",
+        "ean": 1111111111112,
+        "cnpj": 11111111111112,
+        "laboratorie": "laboratorie1",
+    }
+
+    sql = f"""
+        INSERT INTO medicines (id, product, substance, presentation, product_type, ean, cnpj, laboratorie)
+        VALUES (
+            {mocked_medicine["id"]},
+            '{mocked_medicine["product"]}',
+            '{mocked_medicine["substance"]}',
+            '{mocked_medicine["presentation"]}',
+            '{mocked_medicine["product_type"]}',
+            {mocked_medicine["ean"]},{mocked_medicine["cnpj"]},
+            '{mocked_medicine["laboratorie"]}')
+    """
+
+    connection.execute(text(sql))
+    connection.commit()
+
+    medicines_repository = MedicinesRepository()
+    response = medicines_repository.select_medicine(mocked_medicine["id"])
+
+    assert response[0].id == mocked_medicine["id"]
+    assert response[0].product == mocked_medicine["product"]
+    assert response[0].cnpj == mocked_medicine["cnpj"]
+
+    connection.execute(
+        text(
+            f"""
+        DELETE FROM medicines WHERE id = {response[0].id}
     """
         )
     )

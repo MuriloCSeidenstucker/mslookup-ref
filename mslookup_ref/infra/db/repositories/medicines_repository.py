@@ -24,3 +24,22 @@ class MedicinesRepository:
             except Exception as ex:
                 database.session.rollback()
                 raise ex
+
+    @classmethod
+    def select_medicine(cls, register: int) -> any:
+        """Consulta medicamentos no banco de dados com base no registro do produto.
+
+        Args:
+            register (int): Número do registro do produto a ser pesquisado.
+        """
+        with DBConnectionHandler() as database:
+            try:
+                medicines = (
+                    database.session.query(Medicines)
+                    .filter(Medicines.id == register)
+                    .all()
+                )
+                return medicines
+            except Exception as ex:
+                database.session.rollback()
+                raise ex
