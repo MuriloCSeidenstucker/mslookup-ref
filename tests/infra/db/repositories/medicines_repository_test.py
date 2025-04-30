@@ -1,6 +1,7 @@
 import pytest
 from sqlalchemy import text
 
+from mslookup_ref.domain.models.medicines import Medicines
 from mslookup_ref.infra.db.repositories import MedicinesRepository
 from mslookup_ref.infra.db.settings.connection import DBConnectionHandler
 
@@ -36,31 +37,31 @@ def test_insert_medicine():
         - Assume a existência da tabela 'medicines' e da classe MedicinesRepository.
         - Realiza limpeza dos dados inseridos após a execução.
     """
-    mocked_medicine = {
-        "id": 1111111111111,
-        "product": "product1",
-        "substance": "substance1;substance2;substance3",
-        "presentation": "presentation1",
-        "product_type": "product_type1",
-        "ean": 1111111111111,
-        "cnpj": 11111111111111,
-        "laboratorie": "laboratorie1",
-    }
+    mocked_medicine = Medicines(
+        id=1111111111111,
+        product="product1",
+        substance="substance1;substance2;substance3",
+        presentation="presentation1",
+        product_type="product_type1",
+        ean=1111111111111,
+        cnpj=11111111111111,
+        laboratorie="laboratorie1",
+    )
 
     medicines_repository = MedicinesRepository()
-    medicines_repository.insert_medicine(**mocked_medicine)
+    medicines_repository.insert_medicine(mocked_medicine)
 
     sql = f"""
         SELECT * FROM medicines
-        WHERE product = '{mocked_medicine["product"]}'
-        AND cnpj = {mocked_medicine["cnpj"]}
+        WHERE product = '{mocked_medicine.product}'
+        AND cnpj = {mocked_medicine.cnpj}
     """
     response = connection.execute(text(sql))
     registry = response.fetchall()[0]
 
-    assert registry.id == mocked_medicine["id"]
-    assert registry.product == mocked_medicine["product"]
-    assert registry.cnpj == mocked_medicine["cnpj"]
+    assert registry.id == mocked_medicine.id
+    assert registry.product == mocked_medicine.product
+    assert registry.cnpj == mocked_medicine.cnpj
 
     connection.execute(
         text(
