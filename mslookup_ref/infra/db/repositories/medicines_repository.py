@@ -15,7 +15,10 @@ class MedicinesRepository(MedicinesRepositoryInterface):
         """Insere um novo registro de medicamento no banco de dados.
 
         Args:
-            medicine: Parâmetros correspondentes aos atributos do modelo Medicines.
+            medicine (Medicines): Objeto contendo os atributos do medicamento a ser inserido.
+
+        Raises:
+            Exception: Qualquer erro ocorrido durante a operação de inserção no banco de dados.
         """
         with DBConnectionHandler() as database:
             try:
@@ -39,7 +42,13 @@ class MedicinesRepository(MedicinesRepositoryInterface):
         """Consulta medicamentos no banco de dados com base no seu identificador único (registro do produto).
 
         Args:
-            medicine_id (int): Número do identificador único (registro do produto) a ser pesquisado.
+            medicine_id (int): Identificador único (registro do produto) a ser consultado.
+
+        Returns:
+            Medicines: Instância da classe Medicines contendo os atributos do medicamento encontrado.
+
+        Raises:
+            Exception: Qualquer erro ocorrido durante a operação de consulta no banco de dados.
         """
         with DBConnectionHandler() as database:
             try:
