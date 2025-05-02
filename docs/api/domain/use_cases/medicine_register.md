@@ -1,0 +1,1 @@
+::: mslookup_ref.domain.use_cases.medicine_register.MedicineRegister
