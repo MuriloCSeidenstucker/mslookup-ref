@@ -27,7 +27,7 @@ class MedicinesRepositorySpy:
 
         Armazena os atributos do medicamento como um dicionário em insert_medicine_attributes.
         """
-        self.insert_medicine_attributes["medicine"] = medicine.to_dict()
+        self.insert_medicine_attributes["medicine"] = medicine
 
     def select_medicine(self, medicine_id: int) -> Medicines:
         """Simula a consulta de medicamentos no banco de dados com base no seu identificador único (registro do produto).
