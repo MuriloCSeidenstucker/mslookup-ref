@@ -2,8 +2,6 @@
 
 from typing import Dict
 
-from mslookup_ref.domain.models.medicines import Medicines
-
 
 class MedicineFinderSpy:
     """Classe espiã para simular o comportamento do caso de uso MedicineFinder em testes unitários.
@@ -37,15 +35,16 @@ class MedicineFinderSpy:
 
         self.find_attributes["medicine_id"] = medicine_id
 
-        mocked_medicine = Medicines(
-            medicine_id=1111111111112,
-            product="product2",
-            substance="substance1;substance2;substance3",
-            presentation="presentation2",
-            product_type="product_type2",
-            ean=1111111111112,
-            cnpj=11111111111112,
-            laboratory="laboratory2",
-        )
-        response = {"type": "Medicines", "attributes": mocked_medicine}
+        attributes = {
+            "medicine_id": 1111111111112,
+            "product": "product2",
+            "substance": "substance1;substance2;substance3",
+            "presentation": "presentation2",
+            "product_type": "product_type2",
+            "ean": 1111111111112,
+            "cnpj": 11111111111112,
+            "laboratory": "laboratory2",
+        }
+
+        response = {"type": "Medicines", "attributes": attributes}
         return response

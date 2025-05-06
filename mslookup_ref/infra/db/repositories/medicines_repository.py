@@ -30,7 +30,7 @@ class MedicinesRepository(MedicinesRepositoryInterface):
                     product_type=medicine.product_type,
                     ean=medicine.ean,
                     cnpj=medicine.cnpj,
-                    laboratorie=medicine.laboratorie,
+                    laboratory=medicine.laboratory,
                 )
                 database.session.add(new_registry)
                 database.session.commit()
