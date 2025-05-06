@@ -47,6 +47,6 @@ class MedicineFinderController(ControllerInterface):
             KeyError: Se o parâmetro 'medicine_id' não estiver presente nos query_params.
         """
 
-        medicine_id = http_request.query_params["medicine_id"]
+        medicine_id = int(http_request.query_params["medicine_id"])
         response = self.__use_case.find(medicine_id)
         return HttpResponse(status_code=200, body={"data": response})

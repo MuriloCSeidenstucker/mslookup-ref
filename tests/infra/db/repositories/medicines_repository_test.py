@@ -38,14 +38,14 @@ def test_insert_medicine():
         - Realiza limpeza dos dados inseridos após a execução.
     """
     mocked_medicine = Medicines(
-        id=1111111111111,
+        medicine_id=1111111111111,
         product="product1",
         substance="substance1;substance2;substance3",
         presentation="presentation1",
         product_type="product_type1",
         ean=1111111111111,
         cnpj=11111111111111,
-        laboratorie="laboratorie1",
+        laboratory="laboratory1",
     )
 
     medicines_repository = MedicinesRepository()
@@ -59,14 +59,14 @@ def test_insert_medicine():
     response = connection.execute(text(sql))
     registry = response.fetchall()[0]
 
-    assert registry.id == mocked_medicine.id
+    assert registry.medicine_id == mocked_medicine.medicine_id
     assert registry.product == mocked_medicine.product
     assert registry.cnpj == mocked_medicine.cnpj
 
     connection.execute(
         text(
             f"""
-        DELETE FROM medicines WHERE id = {registry.id}
+        DELETE FROM medicines WHERE medicine_id = {registry.medicine_id}
     """
         )
     )
@@ -100,42 +100,42 @@ def test_select_medicine():
         - Realiza limpeza dos dados inseridos após execução
     """
     mocked_medicine = {
-        "id": 1111111111112,
+        "medicine_id": 1111111111112,
         "product": "product1",
         "substance": "substance1;substance2;substance3",
         "presentation": "presentation1",
         "product_type": "product_type1",
         "ean": 1111111111112,
         "cnpj": 11111111111112,
-        "laboratorie": "laboratorie1",
+        "laboratory": "laboratory1",
     }
 
     sql = f"""
-        INSERT INTO medicines (id, product, substance, presentation, product_type, ean, cnpj, laboratorie)
+        INSERT INTO medicines (medicine_id, product, substance, presentation, product_type, ean, cnpj, laboratory)
         VALUES (
-            {mocked_medicine["id"]},
+            {mocked_medicine["medicine_id"]},
             '{mocked_medicine["product"]}',
             '{mocked_medicine["substance"]}',
             '{mocked_medicine["presentation"]}',
             '{mocked_medicine["product_type"]}',
             {mocked_medicine["ean"]},{mocked_medicine["cnpj"]},
-            '{mocked_medicine["laboratorie"]}')
+            '{mocked_medicine["laboratory"]}')
     """
 
     connection.execute(text(sql))
     connection.commit()
 
     medicines_repository = MedicinesRepository()
-    response = medicines_repository.select_medicine(mocked_medicine["id"])
+    response = medicines_repository.select_medicine(mocked_medicine["medicine_id"])
 
-    assert response[0].id == mocked_medicine["id"]
-    assert response[0].product == mocked_medicine["product"]
-    assert response[0].cnpj == mocked_medicine["cnpj"]
+    assert response.medicine_id == mocked_medicine["medicine_id"]
+    assert response.product == mocked_medicine["product"]
+    assert response.cnpj == mocked_medicine["cnpj"]
 
     connection.execute(
         text(
             f"""
-        DELETE FROM medicines WHERE id = {response[0].id}
+        DELETE FROM medicines WHERE medicine_id = {response.medicine_id}
     """
         )
     )

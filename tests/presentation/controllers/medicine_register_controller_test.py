@@ -1,6 +1,5 @@
 # pylint: disable=R0903:too-few-public-methods
 
-from mslookup_ref.domain.models.medicines import Medicines
 from mslookup_ref.presentation.controllers.medicine_register_controller import (
     MedicineRegisterController,
 )
@@ -16,17 +15,16 @@ class HttpRequestMock:
     """
 
     def __init__(self) -> None:
-        mocked_medicine = Medicines(
-            id=1234567890123,
-            product="product1",
-            substance="substance1;substance2;substance3",
-            presentation="presentation1",
-            product_type="product_type1",
-            ean=1111111111111,
-            cnpj=11111111111111,
-            laboratorie="laboratorie1",
-        )
-        self.body = {"medicine": mocked_medicine}
+        self.body = {
+            "medicine_id": 111111111111,
+            "product": "product1",
+            "substance": "substance1;substance2;substance3",
+            "presentation": "presentation1",
+            "product_type": "product_type1",
+            "ean": 1111111111111,
+            "cnpj": 11111111111111,
+            "laboratory": "laboratory1",
+        }
 
 
 def test_handle():

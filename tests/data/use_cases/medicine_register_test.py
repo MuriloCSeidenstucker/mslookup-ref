@@ -17,14 +17,14 @@ def test_register():
             atributos esperados.
     """
     mocked_medicine = Medicines(
-        id=1111111111111,
+        medicine_id=1111111111111,
         product="product1",
         substance="substance1;substance2;substance3",
         presentation="presentation1",
         product_type="product_type1",
         ean=1111111111111,
         cnpj=11111111111111,
-        laboratorie="laboratorie1",
+        laboratory="laboratory1",
     )
 
     repo = MedicinesRepositorySpy()
@@ -32,7 +32,10 @@ def test_register():
 
     response = medicine_register.register(mocked_medicine)
 
-    assert repo.insert_medicine_attributes["medicine"].id == mocked_medicine.id
+    assert (
+        repo.insert_medicine_attributes["medicine"].medicine_id
+        == mocked_medicine.medicine_id
+    )
     assert response["type"] == "Medicines"
     assert response["attributes"]
 
@@ -44,14 +47,14 @@ def test_register_validation_error_not_integer():
     com a mensagem correta quando o ID fornecido é um número não inteiro.
     """
     mocked_medicine = Medicines(
-        id=1234567890123.0,
+        medicine_id=1234567890123.0,
         product="product1",
         substance="substance1;substance2;substance3",
         presentation="presentation1",
         product_type="product_type1",
         ean=1111111111111,
         cnpj=11111111111111,
-        laboratorie="laboratorie1",
+        laboratory="laboratory1",
     )
 
     repo = MedicinesRepositorySpy()
@@ -71,14 +74,14 @@ def test_register_validation_error_not_13_digits():
     com a mensagem correta quando o ID fornecido não possui exatamente 13 dígitos.
     """
     mocked_medicine = Medicines(
-        id=12345678901234,
+        medicine_id=12345678901234,
         product="product1",
         substance="substance1;substance2;substance3",
         presentation="presentation1",
         product_type="product_type1",
         ean=1111111111111,
         cnpj=11111111111111,
-        laboratorie="laboratorie1",
+        laboratory="laboratory1",
     )
 
     repo = MedicinesRepositorySpy()

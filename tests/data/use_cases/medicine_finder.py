@@ -38,14 +38,14 @@ class MedicineFinderSpy:
         self.find_attributes["medicine_id"] = medicine_id
 
         mocked_medicine = Medicines(
-            id=1111111111111,
-            product="product1",
+            medicine_id=1111111111112,
+            product="product2",
             substance="substance1;substance2;substance3",
-            presentation="presentation1",
-            product_type="product_type1",
-            ean=1111111111111,
-            cnpj=11111111111111,
-            laboratorie="laboratorie1",
+            presentation="presentation2",
+            product_type="product_type2",
+            ean=1111111111112,
+            cnpj=11111111111112,
+            laboratory="laboratory2",
         )
         response = {"type": "Medicines", "attributes": mocked_medicine}
         return response

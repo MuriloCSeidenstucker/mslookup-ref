@@ -102,5 +102,17 @@ class MedicineFinder(MedicineFinderInterface):
         Returns:
             Dict: Dicionário contendo o tipo ("Medicines") e os atributos do medicamento.
         """
-        response = {"type": "Medicines", "attributes": medicine}
+
+        attributes = {
+            "medicine_id": medicine.medicine_id,
+            "product": medicine.product,
+            "substance": medicine.substance,
+            "presentation": medicine.presentation,
+            "product_type": medicine.product_type,
+            "ean": medicine.ean,
+            "cnpj": medicine.cnpj,
+            "laboratory": medicine.laboratory,
+        }
+
+        response = {"type": "Medicines", "attributes": attributes}
         return response

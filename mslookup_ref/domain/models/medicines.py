@@ -18,14 +18,14 @@ class Medicines:
         product_type (str): Tipo ou categoria do medicamento (genérico, similar, etc).
         ean (int): Código EAN (código de barras).
         cnpj (int): Número do CNPJ do fabricante.
-        laboratorie (str): Nome do laboratório ou fabricante.
+        laboratory (str): Nome do laboratório ou fabricante.
     """
 
-    id: int
+    medicine_id: int
     product: str
     substance: str
     presentation: str
     product_type: str
     ean: int
     cnpj: int
-    laboratorie: str
+    laboratory: str

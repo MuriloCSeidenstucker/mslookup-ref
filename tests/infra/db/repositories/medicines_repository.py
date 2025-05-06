@@ -42,12 +42,12 @@ class MedicinesRepositorySpy:
         """
         self.select_medicine_attributes["medicine_id"] = medicine_id
         return Medicines(
-            id=medicine_id,
+            medicine_id=medicine_id,
             product="product_spy_1",
             substance="substance_spy_1",
             presentation="presentation_spy_1",
             product_type="product_type_spy_1",
             ean=1111111111111,
             cnpj=11111111111111,
-            laboratorie="laboratorie_spy_1",
+            laboratory="laboratory_spy_1",
         )

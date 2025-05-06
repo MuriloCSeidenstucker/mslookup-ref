@@ -1,5 +1,6 @@
 # pylint: disable=R0903:too-few-public-methods
 
+from mslookup_ref.domain.models.medicines import Medicines
 from mslookup_ref.domain.use_cases.medicine_register import (
     MedicineRegister as MedicineRegisterInterface,
 )
@@ -45,6 +46,15 @@ class MedicineRegisterController(ControllerInterface):
         Raises:
             KeyError: Se a chave 'medicine' não estiver presente no corpo da requisição.
         """
-        medicine = http_request.body["medicine"]
+        medicine = Medicines(
+            medicine_id=http_request.body["medicine_id"],
+            product=http_request.body["product"],
+            substance=http_request.body["substance"],
+            presentation=http_request.body["presentation"],
+            product_type=http_request.body["product_type"],
+            ean=http_request.body["ean"],
+            cnpj=http_request.body["cnpj"],
+            laboratory=http_request.body["laboratory"],
+        )
         response = self.__use_case.register(medicine)
         return HttpResponse(status_code=200, body={"data": response})

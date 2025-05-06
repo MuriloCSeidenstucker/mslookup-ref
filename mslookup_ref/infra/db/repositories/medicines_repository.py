@@ -4,7 +4,7 @@ from mslookup_ref.data.interfaces.medicines_repository import (
     MedicinesRepositoryInterface,
 )
 from mslookup_ref.domain.models.medicines import Medicines
-from mslookup_ref.infra.db.entities.medicines import Medicines as MedicinesEntity
+from mslookup_ref.infra.db.entities.medicines import MedicinesEntity
 from mslookup_ref.infra.db.settings import DBConnectionHandler
 
 
@@ -23,7 +23,7 @@ class MedicinesRepository(MedicinesRepositoryInterface):
         with DBConnectionHandler() as database:
             try:
                 new_registry = MedicinesEntity(
-                    id=medicine.id,
+                    medicine_id=medicine.medicine_id,
                     product=medicine.product,
                     substance=medicine.substance,
                     presentation=medicine.presentation,
@@ -54,8 +54,8 @@ class MedicinesRepository(MedicinesRepositoryInterface):
             try:
                 medicines = (
                     database.session.query(MedicinesEntity)
-                    .filter(MedicinesEntity.id == medicine_id)
-                    .all()
+                    .filter(MedicinesEntity.medicine_id == medicine_id)
+                    .first()
                 )
                 return medicines
             except Exception as ex:

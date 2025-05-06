@@ -51,7 +51,7 @@ class MedicineRegister(MedicineRegisterInterface):
         Raises:
             ValueError: Se o ID do medicamento não for um número inteiro ou não tiver 13 dígitos.
         """
-        self.__validate_medicine_id(medicine.id)
+        self.__validate_medicine_id(medicine.medicine_id)
         self.__register_medicine(medicine)
         response = self.__format_response(medicine)
         return response
