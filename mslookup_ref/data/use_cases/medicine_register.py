@@ -1,4 +1,4 @@
-# pylint: disable=R0903:too-few-public-methods, W0511:fixme
+# pylint: disable=R0903:too-few-public-methods, W0511:fixme, C0301:line-too-long
 
 from typing import Dict
 
@@ -9,6 +9,7 @@ from mslookup_ref.domain.models.medicines import Medicines
 from mslookup_ref.domain.use_cases.medicine_register import (
     MedicineRegister as MedicineRegisterInterface,
 )
+from mslookup_ref.errors.types import HttpBadRequestError
 
 
 class MedicineRegister(MedicineRegisterInterface):
@@ -49,7 +50,7 @@ class MedicineRegister(MedicineRegisterInterface):
                 {"type": "Medicines", "attributes": <objeto Medicines>}.
 
         Raises:
-            ValueError: Se o ID do medicamento não for um número inteiro ou não tiver 13 dígitos.
+            HttpBadRequestError: Se o ID do medicamento não for um número inteiro ou não tiver 13 dígitos.
         """
         self.__validate_medicine_id(medicine.medicine_id)
         self.__register_medicine(medicine)
@@ -67,13 +68,15 @@ class MedicineRegister(MedicineRegisterInterface):
             medicine_id (int): Identificador do medicamento a ser validado.
 
         Raises:
-            ValueError: Se o ID não for um número inteiro ou não tiver 13 dígitos.
+            HttpBadRequestError: Se o ID não for um número inteiro ou não tiver 13 dígitos.
         """
         if not isinstance(medicine_id, int):
-            raise ValueError("O ID do medicamento deve conter apenas números inteiros.")
+            raise HttpBadRequestError(
+                "O ID do medicamento deve conter apenas números inteiros."
+            )
 
         if len(str(medicine_id)) != 13:
-            raise ValueError("O ID do medicamento deve conter 13 dígitos.")
+            raise HttpBadRequestError("O ID do medicamento deve conter 13 dígitos.")
 
     def __register_medicine(self, medicine: Medicines) -> None:
         """Persiste um medicamento no repositório.

@@ -1,4 +1,5 @@
 from mslookup_ref.data.use_cases.medicine_finder import MedicineFinder
+from mslookup_ref.errors.types import HttpBadRequestError, HttpNotFoundError
 from tests.infra.db.repositories.medicines_repository import MedicinesRepositorySpy
 
 
@@ -24,7 +25,7 @@ def test_find():
 def test_find_validation_error_not_integer():
     """Testa a validação de erro quando o ID do medicamento não é um número inteiro.
 
-    Verifica se o método `find` da classe `MedicineFinder` levanta uma exceção `ValueError`
+    Verifica se o método `find` da classe `MedicineFinder` levanta uma exceção `HttpBadRequestError`
     com a mensagem correta quando o ID fornecido é um número não inteiro.
     """
     medicine_id = 1234567890123.0
@@ -34,15 +35,15 @@ def test_find_validation_error_not_integer():
 
     try:
         medicine_finder.find(medicine_id)
-        assert False, "Expected ValueError not raised"
-    except ValueError as e:
+        assert False, "Expected HttpBadRequestError not raised"
+    except HttpBadRequestError as e:
         assert str(e) == "O ID do medicamento deve conter apenas números inteiros."
 
 
 def test_find_validation_error_not_13_digits():
     """Testa a validação de erro quando o ID do medicamento não contém 13 dígitos.
 
-    Verifica se o método `find` da classe `MedicineFinder` levanta uma exceção `ValueError`
+    Verifica se o método `find` da classe `MedicineFinder` levanta uma exceção `HttpBadRequestError`
     com a mensagem correta quando o ID fornecido não possui exatamente 13 dígitos.
     """
     medicine_id = 12345678901234
@@ -52,15 +53,15 @@ def test_find_validation_error_not_13_digits():
 
     try:
         medicine_finder.find(medicine_id)
-        assert False, "Expected ValueError not raised"
-    except ValueError as e:
+        assert False, "Expected HttpBadRequestError not raised"
+    except HttpBadRequestError as e:
         assert str(e) == "O ID do medicamento deve conter 13 dígitos."
 
 
 def test_find_validation_error_medicine_not_found():
     """Testa a validação de erro quando o medicamento não é encontrado.
 
-    Verifica se o método `find` da classe `MedicineFinder` levanta uma exceção `ValueError`
+    Verifica se o método `find` da classe `MedicineFinder` levanta uma exceção `HttpNotFoundError`
     com a mensagem correta quando o repositório retorna `None` para o ID fornecido.
     """
 
@@ -76,6 +77,6 @@ def test_find_validation_error_medicine_not_found():
 
     try:
         medicine_finder.find(medicine_id)
-        assert False, "Expected ValueError not raised"
-    except ValueError as e:
+        assert False, "Expected HttpNotFoundError not raised"
+    except HttpNotFoundError as e:
         assert str(e) == "Medicamento não encontrado."

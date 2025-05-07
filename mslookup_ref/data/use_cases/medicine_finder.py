@@ -1,4 +1,4 @@
-# pylint: disable=R0903:too-few-public-methods
+# pylint: disable=R0903:too-few-public-methods, C0301:line-too-long
 
 from typing import Dict
 
@@ -9,6 +9,7 @@ from mslookup_ref.domain.models.medicines import Medicines
 from mslookup_ref.domain.use_cases.medicine_finder import (
     MedicineFinder as MedicineFinderInterface,
 )
+from mslookup_ref.errors.types import HttpBadRequestError, HttpNotFoundError
 
 
 class MedicineFinder(MedicineFinderInterface):
@@ -43,8 +44,8 @@ class MedicineFinder(MedicineFinderInterface):
             Dict: Dicionário contendo o tipo ("Medicines") e os atributos do medicamento.
 
         Raises:
-            ValueError: Se o ID do medicamento for inválido (não inteiro, não possuir 13 dígitos)
-                ou se o medicamento não for encontrado no repositório.
+            HttpBadRequestError: Se o ID do medicamento for inválido (não inteiro, não possuir 13 dígitos).
+            HttpNotFoundError: Se o medicamento não for encontrado no repositório.
         """
         self.__validate_medicine_id(medicine_id)
         medicine = self.__fetch_medicine(medicine_id)
@@ -62,13 +63,15 @@ class MedicineFinder(MedicineFinderInterface):
             medicine_id (int): Identificador do medicamento a ser validado.
 
         Raises:
-            ValueError: Se o ID não for um número inteiro ou não tiver 13 dígitos.
+            HttpBadRequestError: Se o ID não for um número inteiro ou não tiver 13 dígitos.
         """
         if not isinstance(medicine_id, int):
-            raise ValueError("O ID do medicamento deve conter apenas números inteiros.")
+            raise HttpBadRequestError(
+                "O ID do medicamento deve conter apenas números inteiros."
+            )
 
         if len(str(medicine_id)) != 13:
-            raise ValueError("O ID do medicamento deve conter 13 dígitos.")
+            raise HttpBadRequestError("O ID do medicamento deve conter 13 dígitos.")
 
     def __fetch_medicine(self, medicine_id: int) -> Medicines:
         """Consulta o repositório para obter os dados de um medicamento.
@@ -83,11 +86,11 @@ class MedicineFinder(MedicineFinderInterface):
             Medicines: Instância da classe Medicines contendo os dados do medicamento.
 
         Raises:
-            ValueError: Se o medicamento não for encontrado no repositório.
+            HttpNotFoundError: Se o medicamento não for encontrado no repositório.
         """
         medicine = self.__medicines_repository.select_medicine(medicine_id)
         if not medicine:
-            raise ValueError("Medicamento não encontrado.")
+            raise HttpNotFoundError("Medicamento não encontrado.")
         return medicine
 
     @classmethod
