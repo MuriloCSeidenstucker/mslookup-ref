@@ -17,8 +17,7 @@ def handle_errors(error: Exception) -> HttpResponse:
 
     Returns:
         HttpResponse: Resposta HTTP contendo o código de status e um corpo no formato
-            {"errors": [{"title": <nome do erro>, "detail": <mensagem do erro>}]},
-            proporcionando rastreabilidade e clareza sobre o erro ocorrido.
+            {"errors": [{"title": <nome do erro>, "detail": <mensagem do erro>}]}.
 
     Examples:
         - Para HttpBadRequestError("Parâmetro inválido"):
