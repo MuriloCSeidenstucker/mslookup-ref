@@ -10,6 +10,10 @@ from mslookup_ref.main.composers.medicine_finder_composer import (
 from mslookup_ref.main.composers.medicine_register_composer import (
     medicine_register_composer,
 )
+from mslookup_ref.validators.medicine_finder_validator import medicine_finder_validator
+from mslookup_ref.validators.medicine_register_validator import (
+    medicine_register_validator,
+)
 
 medicine_route_bp = Blueprint("medicine_routes", __name__)
 
@@ -40,6 +44,7 @@ def find_medicine():
     http_response = None
 
     try:
+        medicine_finder_validator(request)
         http_response = request_adapter(request, medicine_finder_composer())
     except Exception as e:
         http_response = handle_errors(e)
@@ -73,6 +78,7 @@ def register_medicine():
     http_response = None
 
     try:
+        medicine_register_validator(request)
         http_response = request_adapter(request, medicine_register_composer())
     except Exception as e:
         http_response = handle_errors(e)
