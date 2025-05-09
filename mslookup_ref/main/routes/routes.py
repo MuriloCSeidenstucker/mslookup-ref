@@ -1,8 +1,11 @@
 # pylint: disable=W0718:broad-exception-caught
 
+import uuid
+
 from flask import Blueprint, jsonify, request
 
 from mslookup_ref.errors.error_handler import handle_errors
+from mslookup_ref.infra.log.logger import get_logger
 from mslookup_ref.main.adapters.request_adapter import request_adapter
 from mslookup_ref.main.composers.medicine_finder_composer import (
     medicine_finder_composer,
@@ -14,6 +17,8 @@ from mslookup_ref.validators.medicine_finder_validator import medicine_finder_va
 from mslookup_ref.validators.medicine_register_validator import (
     medicine_register_validator,
 )
+
+logger = get_logger(__name__)
 
 medicine_route_bp = Blueprint("medicine_routes", __name__)
 
@@ -41,12 +46,37 @@ def find_medicine():
         Response: {"data": {"type": "Medicines", "attributes": {...}}}, 200
     """
 
+    correlation_id = str(uuid.uuid4())
+    logger.info("Received GET /medicine/find [CorrelationID: %s]", correlation_id)
+    logger.debug("Query parameters: %s", request.args)
+
     http_response = None
 
     try:
+        logger.debug("Validating request [CorrelationID: %s]", correlation_id)
         medicine_finder_validator(request)
+        logger.info(
+            "Request validated successfully [CorrelationID: %s]", correlation_id
+        )
+
+        logger.debug(
+            "Processing request with adapter [CorrelationID: %s]", correlation_id
+        )
         http_response = request_adapter(request, medicine_finder_composer())
+
+        logger.info(
+            "Request processed successfully [CorrelationID: %s]", correlation_id
+        )
+        logger.debug(
+            "Response body: %s [CorrelationID: %s]", http_response.body, correlation_id
+        )
     except Exception as e:
+        logger.error(
+            "Error processing request [CorrelationID: %s]: %s",
+            correlation_id,
+            str(e),
+            exc_info=True,
+        )
         http_response = handle_errors(e)
 
     return jsonify(http_response.body), http_response.status_code
@@ -75,12 +105,37 @@ def register_medicine():
         Response: {"data": {"type": "Medicines", "attributes": {...}}}, 200
     """
 
+    correlation_id = str(uuid.uuid4())
+    logger.info("Received POST /medicine [CorrelationID: %s]", correlation_id)
+    logger.debug("Request body: [REDACTED] [CorrelationID: %s]", correlation_id)
+
     http_response = None
 
     try:
+        logger.debug("Validating request [CorrelationID: %s]", correlation_id)
         medicine_register_validator(request)
+        logger.info(
+            "Request validated successfully [CorrelationID: %s]", correlation_id
+        )
+
+        logger.debug(
+            "Processing request with adapter [CorrelationID: %s]", correlation_id
+        )
         http_response = request_adapter(request, medicine_register_composer())
+
+        logger.info(
+            "Request processed successfully [CorrelationID: %s]", correlation_id
+        )
+        logger.debug(
+            "Response body: %s [CorrelationID: %s]", http_response.body, correlation_id
+        )
     except Exception as e:
+        logger.error(
+            "Error processing request [CorrelationID: %s]: %s",
+            correlation_id,
+            str(e),
+            exc_info=True,
+        )
         http_response = handle_errors(e)
 
     return jsonify(http_response.body), http_response.status_code
