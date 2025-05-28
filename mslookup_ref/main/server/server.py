@@ -1,6 +1,6 @@
 from flask import Flask
 
-from mslookup_ref.main.routes.routes import medicine_route_bp
+from mslookup_ref.main.routes.routes import medicine_route_bp, laboratory_route_bp
 
 app = Flask(__name__)
 """Aplicação Flask principal.
@@ -15,3 +15,4 @@ Attributes:
 """
 
 app.register_blueprint(medicine_route_bp)
+app.register_blueprint(laboratory_route_bp)

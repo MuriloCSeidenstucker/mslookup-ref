@@ -1,14 +1,14 @@
 # pylint: disable=R0903:too-few-public-methods, C0301:line-too-long
 
 from mslookup_ref.data.interfaces.medicines_repository import (
-    MedicinesRepositoryInterface,
+    MedicineRepositoryInterface,
 )
 from mslookup_ref.domain.models.medicines import Medicines
 from mslookup_ref.infra.db.entities.medicines import MedicinesEntity
 from mslookup_ref.infra.db.settings import DBConnectionHandler
 
 
-class MedicinesRepository(MedicinesRepositoryInterface):
+class MedicinesRepository(MedicineRepositoryInterface):
     """Repositório para operações no banco de dados relacionadas a medicamentos."""
 
     def insert_medicine(self, medicine: Medicines) -> None:
@@ -29,7 +29,6 @@ class MedicinesRepository(MedicinesRepositoryInterface):
                     presentation=medicine.presentation,
                     product_type=medicine.product_type,
                     ean=medicine.ean,
-                    cnpj=medicine.cnpj,
                     laboratory=medicine.laboratory,
                 )
                 database.session.add(new_registry)

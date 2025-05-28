@@ -3,7 +3,7 @@
 from mslookup_ref.domain.models.medicines import Medicines
 
 
-class MedicinesRepositorySpy:
+class LaboratoriesRepositorySpy:
     """Classe espiã para simular um repositório de medicamentos, usada para fins de teste.
 
     Esta classe imita o comportamento de um repositório de medicamentos, armazenando atributos para operações de

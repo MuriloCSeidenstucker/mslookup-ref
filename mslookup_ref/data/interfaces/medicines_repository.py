@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from mslookup_ref.domain.models.medicines import Medicines
 
 
-class MedicinesRepositoryInterface(ABC):
+class MedicineRepositoryInterface(ABC):
     """Define a interface para repositórios de medicamentos.
 
     Esta classe abstrata estabelece o contrato para implementações de repositórios

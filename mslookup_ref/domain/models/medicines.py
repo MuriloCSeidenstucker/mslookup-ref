@@ -1,6 +1,9 @@
 # pylint: disable=R0902:too-many-instance-attributes
 
 from dataclasses import dataclass
+from typing import Optional
+
+from mslookup_ref.domain.models.laboratories import Laboratories
 
 
 @dataclass
@@ -11,14 +14,14 @@ class Medicines:
     incluindo identificação, detalhes do produto e dados do laboratório associado.
 
     Attributes:
-        id (int): Identificador único do medicamento.
+        medicine_id (int): Identificador único do medicamento.
         product (str): Nome do produto do medicamento.
         substance (str): Substância ativa ou ingrediente principal.
         presentation (str): Forma de apresentação do medicamento.
         product_type (str): Tipo ou categoria do medicamento (genérico, similar, etc).
         ean (int): Código EAN (código de barras).
-        cnpj (int): Número do CNPJ do fabricante.
-        laboratory (str): Nome do laboratório ou fabricante.
+        laboratory_id (int): Identificador do laboratório associado (chave estrangeira).
+        laboratory (Optional[Laboratories]): Objeto representando o laboratório associado (opcional).
     """
 
     medicine_id: int
@@ -27,5 +30,5 @@ class Medicines:
     presentation: str
     product_type: str
     ean: int
-    cnpj: int
-    laboratory: str
+    laboratory_id: int
+    laboratory: Optional[Laboratories]

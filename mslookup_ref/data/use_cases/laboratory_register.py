@@ -1,4 +1,4 @@
-# pylint: disable=R0903:too-few-public-methods, W0511:fixme, C0301:line-too-long
+# pylint: disable=R0903:too-few-public-methods, C0301:line-too-long
 
 from typing import Dict
 
@@ -15,33 +15,36 @@ from mslookup_ref.errors.types import HttpBadRequestError
 class LaboratoryRegister(LaboratoryRegisterInterface):
     """Implementa o caso de uso para registro de laboratórios.
 
-    Esta classe é responsável por registrar laboratórios no sistema, utilizando um
-    repositório para persistência dos dados. Segue o contrato definido pela interface
-    LaboratoryRegisterInterface.
+    Esta classe realiza o registro de laboratórios por meio de um repositório, validando
+    o CNPJ do laboratório e inserindo os dados no banco de dados. Segue o contrato
+    definido pela interface LaboratoryRegisterInterface, tratando erros de validação
+    com exceções padronizadas.
 
     Args:
         laboratory_repository (LaboratoriesRepositoryInterface): Repositório responsável
-            por realizar operações de persistência de laboratórios.
+            por acessar e manipular os dados de laboratórios.
 
     Attributes:
         __laboratory_repository (LaboratoriesRepositoryInterface): Repositório utilizado
-            para operações de persistência de laboratórios.
+            para operações de registro de laboratórios.
     """
 
     def __init__(self, laboratory_repository: LaboratoriesRepositoryInterface) -> None:
         self.__laboratory_repository = laboratory_repository
 
     def register(self, laboratory: Laboratories) -> Dict:
-        """Registra um laboratório no sistema.
-
-        Valida o ID do laboratório, persiste os dados no repositório e retorna uma
-        resposta formatada com os dados do laboratório.
+        """Registra um laboratório no repositório.
 
         Args:
-            laboratory (Laboratories): Instância do modelo Laboratories contendo os dados do laboratório.
+            laboratory (Laboratories): Instância da classe Laboratories contendo os dados
+                do laboratório a ser registrado.
 
         Returns:
-            Dict: Dicionário contendo os dados do laboratório registrado.
+            Dict: Dicionário no formato {"type": "Laboratories", "attributes": <atributos do laboratório>}.
+
+        Raises:
+            HttpBadRequestError: Se o CNPJ do laboratório não for composto apenas por dígitos
+                ou não tiver 14 dígitos.
         """
         self.__validate_laboratory_cnpj(laboratory.cnpj)
         self.__register_laboratory(laboratory)
@@ -50,6 +53,14 @@ class LaboratoryRegister(LaboratoryRegisterInterface):
 
     @classmethod
     def __validate_laboratory_cnpj(cls, cnpj: str) -> None:
+        """Valida o CNPJ do laboratório quanto ao formato e tamanho.
+
+        Args:
+            cnpj (str): CNPJ do laboratório a ser validado.
+
+        Raises:
+            HttpBadRequestError: Se o CNPJ não for composto apenas por dígitos ou não tiver 14 dígitos.
+        """
         if not cnpj.isdigit():
             raise HttpBadRequestError(
                 "O CNPJ do laboratório deve conter apenas números inteiros."
@@ -59,29 +70,24 @@ class LaboratoryRegister(LaboratoryRegisterInterface):
             raise HttpBadRequestError("O CNPJ deve conter 14 dígitos.")
 
     def __register_laboratory(self, laboratory: Laboratories) -> None:
-        """Persiste um laboratório no repositório.
-
-        Utiliza o repositório injetado para inserir os dados do laboratório.
+        """Insere os dados de um laboratório no repositório.
 
         Args:
-            laboratory (Laboratories): Instância do modelo Laboratories a ser persistida.
+            laboratory (Laboratories): Instância da classe Laboratories contendo os dados
+                do laboratório a ser inserido.
         """
         self.__laboratory_repository.insert_laboratory(laboratory)
 
     @classmethod
     def __format_response(cls, laboratory: Laboratories) -> Dict:
-        """Formata a resposta do registro em um dicionário.
-
-        Cria um dicionário com a estrutura {"type": "Laboratories", "attributes": dict[str, Any]},
-        contendo os dados do laboratório registrado.
+        """Formata os dados do laboratório em um dicionário de resposta.
 
         Args:
-            laboratory (Laboratories): Instância do modelo Laboratories a ser formatada.
+            laboratory (Laboratories): Instância da classe Laboratories com os dados do laboratório.
 
         Returns:
-            Dict: Dicionário com os dados formatados do laboratório.
+            Dict: Dicionário no formato {"type": "Laboratories", "attributes": <dicionário de atributos>}.
         """
-
         attributes = {
             "full_name": laboratory.full_name,
             "cnpj": laboratory.cnpj,

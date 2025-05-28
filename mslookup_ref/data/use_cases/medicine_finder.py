@@ -3,7 +3,7 @@
 from typing import Dict
 
 from mslookup_ref.data.interfaces.medicines_repository import (
-    MedicinesRepositoryInterface,
+    MedicineRepositoryInterface,
 )
 from mslookup_ref.domain.models.medicines import Medicines
 from mslookup_ref.domain.use_cases.medicine_finder import (
@@ -28,7 +28,7 @@ class MedicineFinder(MedicineFinderInterface):
             para operações de busca de medicamentos.
     """
 
-    def __init__(self, medicines_repository: MedicinesRepositoryInterface) -> None:
+    def __init__(self, medicines_repository: MedicineRepositoryInterface) -> None:
         self.__medicines_repository = medicines_repository
 
     def find(self, medicine_id: int) -> Dict:

@@ -7,12 +7,16 @@ from flask import Blueprint, g, jsonify, request
 from mslookup_ref.errors.error_handler import handle_errors
 from mslookup_ref.logging import LevelName, LoggerHandler
 from mslookup_ref.main.adapters.request_adapter import request_adapter
+from mslookup_ref.main.composers.laboratory_finder_composer import laboratory_finder_composer
+from mslookup_ref.main.composers.laboratory_register_composer import laboratory_register_composer
 from mslookup_ref.main.composers.medicine_finder_composer import (
     medicine_finder_composer,
 )
 from mslookup_ref.main.composers.medicine_register_composer import (
     medicine_register_composer,
 )
+from mslookup_ref.validators.laboratory_finder_validator import laboratory_finder_validator
+from mslookup_ref.validators.laboratory_register_validator import laboratory_register_validator
 from mslookup_ref.validators.medicine_finder_validator import medicine_finder_validator
 from mslookup_ref.validators.medicine_register_validator import (
     medicine_register_validator,
@@ -22,6 +26,7 @@ logger_handler = LoggerHandler(LevelName.DEBUG)
 logger = logger_handler.get_logger()
 
 medicine_route_bp = Blueprint("medicine_routes", __name__)
+laboratory_route_bp = Blueprint("laboratory_routes", __name__)
 
 
 @medicine_route_bp.route("/medicine/find", methods=["GET"])
@@ -115,6 +120,65 @@ def register_medicine():
     except Exception as e:
         logger.error(
             "Erro ao processar registro de medicamento: error_type=%s, message=%s",
+            type(e).__name__,
+            str(e),
+            exc_info=True,
+        )
+        http_response = handle_errors(e)
+
+    return jsonify(http_response.body), http_response.status_code
+
+
+@laboratory_route_bp.route("/laboratory/find", methods=["GET"])
+def find_laboratory():
+    http_response = None
+    g.log_id = str(uuid.uuid4())
+
+    try:
+        logger.info(
+            "Iniciando busca de laboratório: endpoint=/laboratory/find, method=GET, params=%s",
+            request.args,
+        )
+        laboratory_finder_validator(request)
+        http_response = request_adapter(request, laboratory_finder_composer())
+        logger.info(
+            "Busca concluída: status_code=%s, response_body=%s",
+            http_response.status_code,
+            http_response.body,
+        )
+    except Exception as e:
+        logger.error(
+            "Erro ao processar busca de laboratório: error_type=%s, message=%s",
+            type(e).__name__,
+            str(e),
+            exc_info=True,
+        )
+        http_response = handle_errors(e)
+
+    return jsonify(http_response.body), http_response.status_code
+
+
+@laboratory_route_bp.route("/laboratory", methods=["POST"])
+def register_laboratory():
+
+    http_response = None
+    g.log_id = str(uuid.uuid4())
+
+    try:
+        logger.info(
+            "Iniciando registro de laboratório: endpoint=/laboratory, method=POST, body=%s",
+            request.get_json(),
+        )
+        laboratory_register_validator(request)
+        http_response = request_adapter(request, laboratory_register_composer())
+        logger.info(
+            "Registro concluído: status_code=%s, response_body=%s",
+            http_response.status_code,
+            http_response.body,
+        )
+    except Exception as e:
+        logger.error(
+            "Erro ao processar registro de laboratório: error_type=%s, message=%s",
             type(e).__name__,
             str(e),
             exc_info=True,

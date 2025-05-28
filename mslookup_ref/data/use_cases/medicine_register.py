@@ -3,7 +3,7 @@
 from typing import Dict
 
 from mslookup_ref.data.interfaces.medicines_repository import (
-    MedicinesRepositoryInterface,
+    MedicineRepositoryInterface,
 )
 from mslookup_ref.domain.models.medicines import Medicines
 from mslookup_ref.domain.use_cases.medicine_register import (
@@ -32,7 +32,7 @@ class MedicineRegister(MedicineRegisterInterface):
         ser implementadas conforme necessário.
     """
 
-    def __init__(self, medicines_repository: MedicinesRepositoryInterface) -> None:
+    def __init__(self, medicines_repository: MedicineRepositoryInterface) -> None:
         self.__medicines_repository = medicines_repository
 
     # TODO: Estudar e adicionar todas as validações necessárias para o registro de medicamentos.

@@ -27,7 +27,7 @@ def test_register():
     assert response["attributes"]["full_name"] == mocked_laboratory.full_name
 
 
-def test_register_validation_error_not_integer():
+def test_register_validation_error_not_digit():
     mocked_laboratory = Laboratories(
         full_name = "laboratory_1",
         cnpj = "12.345.678/9012-34",

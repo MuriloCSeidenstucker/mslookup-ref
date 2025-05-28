@@ -1,7 +1,7 @@
 from mslookup_ref.data.use_cases.medicine_register import MedicineRegister
 from mslookup_ref.domain.models.medicines import Medicines
 from mslookup_ref.errors.types import HttpBadRequestError
-from tests.infra.db.repositories.medicines_repository import MedicinesRepositorySpy
+from tests.infra.db.repositories.medicines_repository import LaboratoriesRepositorySpy
 
 
 def test_register():
@@ -28,7 +28,7 @@ def test_register():
         laboratory="laboratory1",
     )
 
-    repo = MedicinesRepositorySpy()
+    repo = LaboratoriesRepositorySpy()
     medicine_register = MedicineRegister(repo)
 
     response = medicine_register.register(mocked_medicine)
@@ -59,7 +59,7 @@ def test_register_validation_error_not_integer():
         laboratory="laboratory1",
     )
 
-    repo = MedicinesRepositorySpy()
+    repo = LaboratoriesRepositorySpy()
     medicine_register = MedicineRegister(repo)
 
     try:
@@ -87,7 +87,7 @@ def test_register_validation_error_not_13_digits():
         laboratory="laboratory1",
     )
 
-    repo = MedicinesRepositorySpy()
+    repo = LaboratoriesRepositorySpy()
     medicine_register = MedicineRegister(repo)
 
     try:

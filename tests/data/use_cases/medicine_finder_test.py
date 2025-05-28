@@ -1,6 +1,6 @@
 from mslookup_ref.data.use_cases.medicine_finder import MedicineFinder
 from mslookup_ref.errors.types import HttpBadRequestError, HttpNotFoundError
-from tests.infra.db.repositories.medicines_repository import MedicinesRepositorySpy
+from tests.infra.db.repositories.medicines_repository import LaboratoriesRepositorySpy
 
 
 def test_find():
@@ -12,7 +12,7 @@ def test_find():
     """
     medicine_id = 1234567890123
 
-    repo = MedicinesRepositorySpy()
+    repo = LaboratoriesRepositorySpy()
     medicine_finder = MedicineFinder(repo)
 
     response = medicine_finder.find(medicine_id)
@@ -30,7 +30,7 @@ def test_find_validation_error_not_integer():
     """
     medicine_id = 1234567890123.0
 
-    repo = MedicinesRepositorySpy()
+    repo = LaboratoriesRepositorySpy()
     medicine_finder = MedicineFinder(repo)
 
     try:
@@ -48,7 +48,7 @@ def test_find_validation_error_not_13_digits():
     """
     medicine_id = 12345678901234
 
-    repo = MedicinesRepositorySpy()
+    repo = LaboratoriesRepositorySpy()
     medicine_finder = MedicineFinder(repo)
 
     try:
@@ -66,7 +66,7 @@ def test_find_validation_error_medicine_not_found():
     """
 
     # pylint: disable=C0115:missing-class-docstring
-    class MedicinesRepositoryError(MedicinesRepositorySpy):
+    class MedicinesRepositoryError(LaboratoriesRepositorySpy):
         def select_medicine(self, medicine_id):
             return None
 
