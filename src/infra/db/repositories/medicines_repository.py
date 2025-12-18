@@ -4,7 +4,7 @@ from src.data.interfaces.medicines_repository import (
     MedicinesRepositoryInterface,
 )
 from src.domain.models.medicines import Medicines
-from src.infra.db.entities.medicines import MedicinesEntity
+from src.infra.db.entities.drug_entity import DrugEntity
 from src.infra.db.settings import DBConnectionHandler
 
 
@@ -22,7 +22,7 @@ class MedicinesRepository(MedicinesRepositoryInterface):
         """
         with DBConnectionHandler() as database:
             try:
-                new_registry = MedicinesEntity(
+                new_registry = DrugEntity(
                     medicine_id=medicine.medicine_id,
                     product=medicine.product,
                     substance=medicine.substance,
@@ -53,8 +53,8 @@ class MedicinesRepository(MedicinesRepositoryInterface):
         with DBConnectionHandler() as database:
             try:
                 medicines = (
-                    database.session.query(MedicinesEntity)
-                    .filter(MedicinesEntity.medicine_id == medicine_id)
+                    database.session.query(DrugEntity)
+                    .filter(DrugEntity.medicine_id == medicine_id)
                     .first()
                 )
                 return medicines
