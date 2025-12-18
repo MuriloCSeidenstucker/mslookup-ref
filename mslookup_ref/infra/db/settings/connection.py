@@ -8,9 +8,10 @@ class DBConnectionHandler:
     """Gerencia a conexão com o banco de dados utilizando SQLAlchemy."""
 
     def __init__(self) -> None:
-        self.__connection_string = "{}://{}:{}@{}:{}/{}".format(
-            "mysql+pymysql", "root", "root", "localhost", "3306", "ms_database"
-        )
+        # self.__connection_string = "{}://{}:{}@{}:{}/{}".format(
+        #     "mysql+pymysql", "root", "root", "localhost", "3306", "ms_database"
+        # )
+        self.__connection_string = "sqlite:///mslookup.db"
         self.__engine = self.__create_database_engine()
         self.session = None
 
