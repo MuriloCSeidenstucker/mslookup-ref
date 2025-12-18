@@ -2,9 +2,7 @@
 
 import pytest
 
-from src.errors.types.http_unprocessable_entity import (
-    HttpUnprocessableEntityError,
-)
+from src.errors.types.http_unprocessable_entity import HttpUnprocessableEntityError
 from src.validators.medicine_finder_validator import medicine_finder_validator
 
 

@@ -1,14 +1,6 @@
 # pylint: disable=C0301:line-too-long, R0903:too-few-public-methods
 
-from sqlalchemy import (
-    String,
-    Integer,
-    Date,
-    Boolean,
-    DateTime,
-    func,
-    Index,
-)
+from sqlalchemy import Boolean, Date, DateTime, Index, Integer, String, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.infra.db.settings.base import Base
@@ -106,6 +98,10 @@ class DrugEntity(Base):
 Index("ix_drugs_registration_number", DrugEntity.registration_number, unique=True)
 Index("ix_drugs_product_name_normalized", DrugEntity.product_name_normalized)
 Index("ix_drugs_active_ingredient_normalized", DrugEntity.active_ingredient_normalized)
-Index("ix_drugs_registration_holder_normalized", DrugEntity.registration_holder_normalized)
-Index("ix_drugs_regulatory_category_normalized", DrugEntity.regulatory_category_normalized)
+Index(
+    "ix_drugs_registration_holder_normalized", DrugEntity.registration_holder_normalized
+)
+Index(
+    "ix_drugs_regulatory_category_normalized", DrugEntity.regulatory_category_normalized
+)
 Index("ix_drugs_is_registration_valid", DrugEntity.is_registration_valid)

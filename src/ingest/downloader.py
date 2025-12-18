@@ -1,4 +1,5 @@
 from pathlib import Path
+
 import requests
 
 from src.logging import LevelName, LoggerHandler
@@ -32,9 +33,7 @@ def download_anvisa_csv(
             "Unexpected HTTP status code: %s",
             response.status_code,
         )
-        raise DownloadError(
-            f"Unexpected status code: {response.status_code}"
-        )
+        raise DownloadError(f"Unexpected status code: {response.status_code}")
 
     if not response.content:
         logger.error("Downloaded file is empty")

@@ -2,12 +2,8 @@
 
 import pytest
 
-from src.errors.types.http_unprocessable_entity import (
-    HttpUnprocessableEntityError,
-)
-from src.validators.medicine_register_validator import (
-    medicine_register_validator,
-)
+from src.errors.types.http_unprocessable_entity import HttpUnprocessableEntityError
+from src.validators.medicine_register_validator import medicine_register_validator
 
 
 class MockRequest:

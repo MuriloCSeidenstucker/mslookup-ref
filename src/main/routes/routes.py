@@ -7,16 +7,10 @@ from flask import Blueprint, g, jsonify, request
 from src.errors.error_handler import handle_errors
 from src.logging import LevelName, LoggerHandler
 from src.main.adapters.request_adapter import request_adapter
-from src.main.composers.medicine_finder_composer import (
-    medicine_finder_composer,
-)
-from src.main.composers.medicine_register_composer import (
-    medicine_register_composer,
-)
+from src.main.composers.medicine_finder_composer import medicine_finder_composer
+from src.main.composers.medicine_register_composer import medicine_register_composer
 from src.validators.medicine_finder_validator import medicine_finder_validator
-from src.validators.medicine_register_validator import (
-    medicine_register_validator,
-)
+from src.validators.medicine_register_validator import medicine_register_validator
 
 logger_handler = LoggerHandler(LevelName.DEBUG)
 logger = logger_handler.get_logger()

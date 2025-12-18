@@ -1,8 +1,6 @@
 # pylint: disable=R0903:too-few-public-methods, C0301:line-too-long
 
-from src.data.interfaces.medicines_repository import (
-    MedicinesRepositoryInterface,
-)
+from src.data.interfaces.medicines_repository import MedicinesRepositoryInterface
 from src.domain.models.medicines import Medicines
 from src.infra.db.entities.drug_entity import DrugEntity
 from src.infra.db.settings import DBConnectionHandler

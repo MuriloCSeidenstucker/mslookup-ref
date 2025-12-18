@@ -5,9 +5,7 @@ from src.domain.use_cases.medicine_finder import (
 )
 from src.presentation.http_types.http_request import HttpRequest
 from src.presentation.http_types.http_response import HttpResponse
-from src.presentation.interfaces.controller_interface import (
-    ControllerInterface,
-)
+from src.presentation.interfaces.controller_interface import ControllerInterface
 
 
 class MedicineFinderController(ControllerInterface):
