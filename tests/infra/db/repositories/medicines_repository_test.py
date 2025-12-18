@@ -1,7 +1,7 @@
 import pytest
 from sqlalchemy import text
 
-from src.domain.models.drugs import Medicines
+from src.domain.models.drugs import Drug
 from src.infra.db.repositories import MedicinesRepository
 from src.infra.db.settings.connection import DBConnectionHandler
 
