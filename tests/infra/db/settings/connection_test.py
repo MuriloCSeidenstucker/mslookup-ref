@@ -1,6 +1,6 @@
 import pytest
 
-from mslookup_ref.infra.db.settings import DBConnectionHandler
+from src.infra.db.settings import DBConnectionHandler
 
 
 @pytest.mark.skip(reason="sensitive test")

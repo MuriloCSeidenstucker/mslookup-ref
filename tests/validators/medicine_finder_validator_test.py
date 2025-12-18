@@ -2,10 +2,10 @@
 
 import pytest
 
-from mslookup_ref.errors.types.http_unprocessable_entity import (
+from src.errors.types.http_unprocessable_entity import (
     HttpUnprocessableEntityError,
 )
-from mslookup_ref.validators.medicine_finder_validator import medicine_finder_validator
+from src.validators.medicine_finder_validator import medicine_finder_validator
 
 
 class MockRequest:

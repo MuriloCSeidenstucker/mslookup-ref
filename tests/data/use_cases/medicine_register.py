@@ -2,7 +2,7 @@
 
 from typing import Dict
 
-from mslookup_ref.domain.models.medicines import Medicines
+from src.domain.models.medicines import Medicines
 
 
 class MedicineRegisterSpy:

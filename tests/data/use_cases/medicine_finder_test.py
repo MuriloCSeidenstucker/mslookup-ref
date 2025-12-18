@@ -1,5 +1,5 @@
-from mslookup_ref.data.use_cases.medicine_finder import MedicineFinder
-from mslookup_ref.errors.types import HttpBadRequestError, HttpNotFoundError
+from src.data.use_cases.medicine_finder import MedicineFinder
+from src.errors.types import HttpBadRequestError, HttpNotFoundError
 from tests.infra.db.repositories.medicines_repository import MedicinesRepositorySpy
 
 

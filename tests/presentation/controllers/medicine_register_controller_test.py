@@ -1,9 +1,9 @@
 # pylint: disable=R0903:too-few-public-methods
 
-from mslookup_ref.presentation.controllers.medicine_register_controller import (
+from src.presentation.controllers.medicine_register_controller import (
     MedicineRegisterController,
 )
-from mslookup_ref.presentation.http_types.http_response import HttpResponse
+from src.presentation.http_types.http_response import HttpResponse
 from tests.data.use_cases.medicine_register import MedicineRegisterSpy
 
 

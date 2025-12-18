@@ -1,4 +1,4 @@
-from mslookup_ref.main.server.server import app
+from src.main.server.server import app
 
 if __name__ == "__main__":
     HOST = "0.0.0.0"

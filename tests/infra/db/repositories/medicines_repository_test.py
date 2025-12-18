@@ -1,9 +1,9 @@
 import pytest
 from sqlalchemy import text
 
-from mslookup_ref.domain.models.medicines import Medicines
-from mslookup_ref.infra.db.repositories import MedicinesRepository
-from mslookup_ref.infra.db.settings.connection import DBConnectionHandler
+from src.domain.models.medicines import Medicines
+from src.infra.db.repositories import MedicinesRepository
+from src.infra.db.settings.connection import DBConnectionHandler
 
 db_connection_handler = DBConnectionHandler()
 connection = db_connection_handler.get_engine().connect()

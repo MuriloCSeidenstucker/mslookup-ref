@@ -1,6 +1,6 @@
 # pylint: disable=R0903:too-few-public-methods, C0301:line-too-long
 
-from mslookup_ref.domain.models.medicines import Medicines
+from src.domain.models.medicines import Medicines
 
 
 class MedicinesRepositorySpy:
