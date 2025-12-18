@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from src.domain.models.medicines import Medicines
+from src.domain.models.drugs import Medicines
 
 
 class MedicinesRepositoryInterface(ABC):

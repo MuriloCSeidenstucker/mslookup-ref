@@ -1,6 +1,6 @@
 # pylint: disable=R0903:too-few-public-methods, C0301:line-too-long
 
-from src.domain.models.medicines import Medicines
+from src.domain.models.drugs import Medicines
 
 
 class MedicinesRepositorySpy:

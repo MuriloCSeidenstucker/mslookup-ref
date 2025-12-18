@@ -1,5 +1,5 @@
 from src.data.use_cases.medicine_register import MedicineRegister
-from src.domain.models.medicines import Medicines
+from src.domain.models.drugs import Medicines
 from src.errors.types import HttpBadRequestError
 from tests.infra.db.repositories.medicines_repository import MedicinesRepositorySpy
 

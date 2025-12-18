@@ -3,7 +3,7 @@
 from abc import ABC, abstractmethod
 from typing import Dict
 
-from src.domain.models.medicines import Medicines
+from src.domain.models.drugs import Medicines
 
 
 class MedicineRegister(ABC):

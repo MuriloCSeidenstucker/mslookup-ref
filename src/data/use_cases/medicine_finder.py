@@ -3,7 +3,7 @@
 from typing import Dict
 
 from src.data.interfaces.medicines_repository import MedicinesRepositoryInterface
-from src.domain.models.medicines import Medicines
+from src.domain.models.drugs import Medicines
 from src.domain.use_cases.medicine_finder import (
     MedicineFinder as MedicineFinderInterface,
 )

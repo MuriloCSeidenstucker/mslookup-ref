@@ -1,6 +1,6 @@
 # pylint: disable=R0903:too-few-public-methods
 
-from src.domain.models.medicines import Medicines
+from src.domain.models.drugs import Medicines
 from src.domain.use_cases.medicine_register import (
     MedicineRegister as MedicineRegisterInterface,
 )
