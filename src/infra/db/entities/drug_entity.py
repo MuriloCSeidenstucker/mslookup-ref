@@ -1,5 +1,6 @@
-# pylint: disable=C0301:line-too-long, R0903:too-few-public-methods
+# pylint: disable=C0301:line-too-long, R0903:too-few-public-methods, E1102:not-callable
 
+from datetime import datetime
 from sqlalchemy import Boolean, Date, DateTime, Index, Integer, String, func
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -81,16 +82,16 @@ class DrugEntity(Base):
         nullable=False,
     )
 
-    created_at: Mapped[DateTime] = mapped_column(
+    created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        server_default=func.now,
+        server_default=func.now(),
         nullable=False,
     )
 
-    updated_at: Mapped[DateTime] = mapped_column(
+    updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        server_default=func.now,
-        onupdate=func.now,
+        server_default=func.now(),
+        onupdate=func.now(),
         nullable=False,
     )
 

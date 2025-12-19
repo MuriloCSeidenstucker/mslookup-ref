@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from src.domain.models.drugs import Medicines
+from src.domain.models.drugs import Drug
 
 
 class MedicinesRepositoryInterface(ABC):
@@ -14,25 +14,25 @@ class MedicinesRepositoryInterface(ABC):
     """
 
     @abstractmethod
-    def insert_medicine(self, medicine: Medicines) -> None:
+    def insert_medicine(self, medicine: Drug) -> None:
         """Insere um medicamento no repositório.
 
         Args:
-            medicine (Medicines): Instância do modelo Medicines contendo os dados do medicamento.
+            medicine (Drug): Instância do modelo Drug contendo os dados do medicamento.
 
         Raises:
             NotImplementedError: Se o método não for implementado pelas classes derivadas.
         """
 
     @abstractmethod
-    def select_medicine(self, medicine_id: int) -> Medicines:
+    def select_medicine(self, medicine_id: int) -> Drug:
         """Seleciona um medicamento pelo seu identificador único.
 
         Args:
             medicine_id (int): Identificador único do medicamento a ser recuperado.
 
         Returns:
-            Medicines: Instância do modelo Medicines com os dados do medicamento encontrado.
+            Drug: Instância do modelo Drug com os dados do medicamento encontrado.
 
         Raises:
             NotImplementedError: Se o método não for implementado pelas classes derivadas.

@@ -1,7 +1,7 @@
 # pylint: disable=R0903:too-few-public-methods, C0301:line-too-long
 
 from src.data.interfaces.medicines_repository import MedicinesRepositoryInterface
-from src.domain.models.drugs import Medicines
+from src.domain.models.drugs import Drug
 from src.infra.db.entities.drug_entity import DrugEntity
 from src.infra.db.settings import DBConnectionHandler
 
@@ -9,11 +9,11 @@ from src.infra.db.settings import DBConnectionHandler
 class MedicinesRepository(MedicinesRepositoryInterface):
     """Repositório para operações no banco de dados relacionadas a medicamentos."""
 
-    def insert_medicine(self, medicine: Medicines) -> None:
+    def insert_medicine(self, medicine: Drug) -> None:
         """Insere um novo registro de medicamento no banco de dados.
 
         Args:
-            medicine (Medicines): Objeto contendo os atributos do medicamento a ser inserido.
+            medicine (Drug): Objeto contendo os atributos do medicamento a ser inserido.
 
         Raises:
             Exception: Qualquer erro ocorrido durante a operação de inserção no banco de dados.
@@ -36,14 +36,14 @@ class MedicinesRepository(MedicinesRepositoryInterface):
                 database.session.rollback()
                 raise ex
 
-    def select_medicine(self, medicine_id: int) -> Medicines:
+    def select_medicine(self, medicine_id: int) -> Drug:
         """Consulta medicamentos no banco de dados com base no seu identificador único (registro do produto).
 
         Args:
             medicine_id (int): Identificador único (registro do produto) a ser consultado.
 
         Returns:
-            Medicines: Instância da classe Medicines contendo os atributos do medicamento encontrado.
+            Drug: Instância da classe Drug contendo os atributos do medicamento encontrado.
 
         Raises:
             Exception: Qualquer erro ocorrido durante a operação de consulta no banco de dados.
