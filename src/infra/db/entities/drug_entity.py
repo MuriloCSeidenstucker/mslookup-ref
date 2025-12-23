@@ -1,6 +1,7 @@
 # pylint: disable=C0301:line-too-long, R0903:too-few-public-methods, E1102:not-callable
 
 from datetime import datetime
+
 from sqlalchemy import Boolean, Date, DateTime, Index, Integer, String, func
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -8,11 +9,6 @@ from src.infra.db.settings.base import Base
 
 
 class DrugEntity(Base):
-    """Representa um medicamento no banco de dados.
-
-    Esta classe mapeia os dados dos medicamentos e oferece uma representação
-    para consulta e manipulação no banco de dados.
-    """
 
     __tablename__ = "drugs"
 
@@ -96,7 +92,7 @@ class DrugEntity(Base):
     )
 
 
-Index("ix_drugs_registration_number", DrugEntity.registration_number, unique=True)
+Index("ix_drugs_registration_number", DrugEntity.registration_number)
 Index("ix_drugs_product_name_normalized", DrugEntity.product_name_normalized)
 Index("ix_drugs_active_ingredient_normalized", DrugEntity.active_ingredient_normalized)
 Index(
