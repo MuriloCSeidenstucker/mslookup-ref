@@ -1,77 +1,193 @@
-import pytest
-from pathlib import Path
+# pylint: disable=W0212:protected-access
+
+import csv
 from datetime import date
-from src.ingest.loader import load_csv, _parse_date
+from pathlib import Path
 
-@pytest.mark.parametrize("input_date, expected", [
-    ("25/12/2024", date(2024, 12, 25)),
-    ("01/01/1899", None),
-    ("01/01/2101", None),
-    ("data-invalida", None),
-    ("", None),
-    (None, None),
-])
-def test_parse_date_logic(input_date, expected):
-    assert _parse_date(input_date) == expected
+import pytest
+
+import src.ingest.loader as module
+
+# =========================
+# Helpers
+# =========================
 
 
-def test_load_csv_success(mocker, tmp_path):
-    mock_repo_class = mocker.patch("src.ingest.loader.DrugsRepository")
-    mock_repo_instance = mock_repo_class.return_value
+def create_csv(tmp_path: Path, rows: list[dict]) -> Path:
+    csv_path = tmp_path / "test.csv"
+    with csv_path.open("w", encoding="latin-1", newline="") as f:
+        writer = csv.DictWriter(
+            f,
+            fieldnames=rows[0].keys(),
+            delimiter=";",
+        )
+        writer.writeheader()
+        writer.writerows(rows)
+    return csv_path
 
-    csv_file = tmp_path / "test_drugs.csv"
-    content = (
-        "NUMERO_REGISTRO_PRODUTO,NOME_PRODUTO,PRINCIPIO_ATIVO,CATEGORIA_REGULATORIA,"
-        "EMPRESA_DETENTORA_REGISTRO,SITUACAO_REGISTRO,DATA_VENCIMENTO_REGISTRO\n"
-        "12345,Remedio A,Ativo X,Generico,Empresa A,ATIVO,10/10/2025\n"
-        "67890,Remedio B,Ativo Y,Similar,Empresa B,VÁLIDO,15/05/2030"
+
+# =========================
+# _parse_date
+# =========================
+
+
+@pytest.mark.parametrize(
+    "value,expected",
+    [
+        ("01/01/2020", date(2020, 1, 1)),
+        ("31/12/1900", date(1900, 12, 31)),
+        ("31/12/2100", date(2100, 12, 31)),
+    ],
+)
+def test_parse_date_valid(value, expected):
+    assert module._parse_date(value) == expected
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        None,
+        "",
+        "invalid",
+        "01-01-2020",
+        "01/01/1800",  # abaixo do range
+        "01/01/2200",  # acima do range
+    ],
+)
+def test_parse_date_invalid_returns_none(value):
+    assert module._parse_date(value) is None
+
+
+# =========================
+# load_csv
+# =========================
+
+
+def test_load_csv_happy_path(mocker, tmp_path):
+    # Arrange
+    normalize_mock = mocker.patch(
+        "src.ingest.loader.normalize_text",
+        side_effect=lambda x: x.lower() if x else None,
     )
-    csv_file.write_text(content, encoding="utf-8")
 
-    load_csv(csv_file)
+    drug_cls = mocker.patch("src.ingest.loader.Drug")
+    repo_cls = mocker.patch("src.ingest.loader.DrugsRepository")
+    repo_instance = repo_cls.return_value
 
-    assert mock_repo_instance.insert_drug.call_count == 2
+    rows = [
+        {
+            "NUMERO_REGISTRO_PRODUTO": "123",
+            "NOME_PRODUTO": "Produto A",
+            "PRINCIPIO_ATIVO": "Ativo A",
+            "CATEGORIA_REGULATORIA": "Categoria",
+            "EMPRESA_DETENTORA_REGISTRO": "Empresa",
+            "SITUACAO_REGISTRO": "ATIVO",
+            "DATA_VENCIMENTO_REGISTRO": "01/01/2030",
+        }
+    ]
 
-    first_call_drug = mock_repo_instance.insert_drug.call_args_list[0][0][0]
-    assert first_call_drug.product_name == "Remedio A"
-    assert first_call_drug.is_registration_valid is True
-    assert first_call_drug.registration_expiration_date == date(2025, 10, 10)
+    csv_path = create_csv(tmp_path, rows)
+
+    # Act
+    module.load_csv(csv_path)
+
+    # Assert
+    repo_instance.insert_drug.assert_called_once()
+    drugs_passed = repo_instance.insert_drug.call_args.args[0]
+
+    assert len(drugs_passed) == 1
+    drug_cls.assert_called_once()
+    normalize_mock.assert_any_call("Produto A")
 
 
-def test_load_csv_with_invalid_row_skips_and_continues(mocker, tmp_path):
-    mock_repo = mocker.patch("src.ingest.loader.DrugsRepository").return_value
-    mock_logger = mocker.patch("src.ingest.loader.logger")
+def test_load_csv_empty_file_logs_warning_and_does_not_insert(mocker, tmp_path):
+    # Arrange
+    mocker.patch("src.ingest.loader.normalize_text", return_value=None)
+    repo_cls = mocker.patch("src.ingest.loader.DrugsRepository")
+    logger = mocker.patch("src.ingest.loader.logger")
 
-    csv_file = tmp_path / "corrupt.csv"
-    content = (
-        "NUMERO_REGISTRO_PRODUTO,NOME_PRODUTO,PRINCIPIO_ATIVO,CATEGORIA_REGULATORIA,"
-        "EMPRESA_DETENTORA_REGISTRO,SITUACAO_REGISTRO,DATA_VENCIMENTO_REGISTRO\n"
-        "1,Certo,,Cat,Emp,ATIVO,01/01/2025\n"
-        "2,ERRO_AQUI,,Cat" # Linha mal formada que causará KeyError no row["EMPRESA..."]
+    rows = [
+        {
+            "NUMERO_REGISTRO_PRODUTO": "",
+            "NOME_PRODUTO": "",
+            "PRINCIPIO_ATIVO": "",
+            "CATEGORIA_REGULATORIA": "",
+            "EMPRESA_DETENTORA_REGISTRO": "",
+            "SITUACAO_REGISTRO": "",
+            "DATA_VENCIMENTO_REGISTRO": "",
+        }
+    ]
+
+    csv_path = create_csv(tmp_path, rows)
+
+    # Act
+    module.load_csv(csv_path)
+
+    # Assert
+    repo_cls.return_value.insert_drug.assert_not_called()
+    logger.warning.assert_any_call("No valid drugs found to insert.")
+
+
+def test_load_csv_invalid_row_is_skipped_and_logged(mocker, tmp_path):
+    # Arrange
+    mocker.patch(
+        "src.ingest.loader.normalize_text",
+        side_effect=lambda x: "" if x == "INVALID" else x,
     )
-    csv_file.write_text(content, encoding="utf-8")
 
-    load_csv(csv_file)
+    logger = mocker.patch("src.ingest.loader.logger")
+    repo_cls = mocker.patch("src.ingest.loader.DrugsRepository")
 
-    assert mock_repo.insert_drug.call_count == 1
-    mock_logger.exception.assert_called()
+    rows = [
+        {
+            "NUMERO_REGISTRO_PRODUTO": "1",
+            "NOME_PRODUTO": "INVALID",
+            "PRINCIPIO_ATIVO": "Ativo",
+            "CATEGORIA_REGULATORIA": "Categoria",
+            "EMPRESA_DETENTORA_REGISTRO": "Empresa",
+            "SITUACAO_REGISTRO": "ATIVO",
+            "DATA_VENCIMENTO_REGISTRO": "01/01/2030",
+        }
+    ]
+
+    csv_path = create_csv(tmp_path, rows)
+
+    # Act
+    module.load_csv(csv_path)
+
+    # Assert
+    logger.exception.assert_called()
+    repo_cls.return_value.insert_drug.assert_not_called()
 
 
-def test_load_csv_registration_validity(mocker, tmp_path):
-    mock_repo = mocker.patch("src.ingest.loader.DrugsRepository").return_value
-
-    csv_file = tmp_path / "status_test.csv"
-    content = (
-        "NUMERO_REGISTRO_PRODUTO,NOME_PRODUTO,PRINCIPIO_ATIVO,CATEGORIA_REGULATORIA,"
-        "EMPRESA_DETENTORA_REGISTRO,SITUACAO_REGISTRO,DATA_VENCIMENTO_REGISTRO\n"
-        "1,Ativo,X,C,E,ATIVO,01/01/2025\n"
-        "2,Inativo,X,C,E,CANCELADO,01/01/2025"
+def test_load_csv_sets_unknown_regulatory_category(mocker, tmp_path):
+    # Arrange
+    mocker.patch(
+        "src.ingest.loader.normalize_text",
+        side_effect=lambda x: "" if x == "EMPTY" else x.lower(),
     )
-    csv_file.write_text(content, encoding="utf-8")
 
-    load_csv(csv_file)
+    drug_cls = mocker.patch("src.ingest.loader.Drug")
+    repo_cls = mocker.patch("src.ingest.loader.DrugsRepository")
 
-    drugs = [call[0][0] for call in mock_repo.insert_drug.call_args_list]
+    rows = [
+        {
+            "NUMERO_REGISTRO_PRODUTO": "1",
+            "NOME_PRODUTO": "Produto",
+            "PRINCIPIO_ATIVO": "Ativo",
+            "CATEGORIA_REGULATORIA": "EMPTY",
+            "EMPRESA_DETENTORA_REGISTRO": "Empresa",
+            "SITUACAO_REGISTRO": "ATIVO",
+            "DATA_VENCIMENTO_REGISTRO": "01/01/2030",
+        }
+    ]
 
-    assert drugs[0].is_registration_valid is True
-    assert drugs[1].is_registration_valid is False
+    csv_path = create_csv(tmp_path, rows)
+
+    # Act
+    module.load_csv(csv_path)
+
+    # Assert
+    kwargs = drug_cls.call_args.kwargs
+    assert kwargs["regulatory_category"] == "UNKNOWN"
+    assert kwargs["regulatory_category_normalized"] == "unknown"
