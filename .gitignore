@@ -215,3 +215,6 @@ $RECYCLE.BIN/
 
 # Log files
 *.log
+
+*.db
+raw_data/

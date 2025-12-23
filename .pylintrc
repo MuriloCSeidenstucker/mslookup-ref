@@ -5,3 +5,4 @@ disable=
     C0116, # missing-function-docstring
     C0301, # line-too-long
     R0902, # too-many-instance-attributes
+    W0718, # broad-exception-caught
