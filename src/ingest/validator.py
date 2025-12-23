@@ -4,7 +4,6 @@ from typing import Iterable
 
 from src.logging.logger_handler import LevelName, LoggerHandler
 
-
 logger_handler = LoggerHandler(LevelName.DEBUG)
 logger = logger_handler.get_logger()
 
@@ -32,19 +31,33 @@ def validate_csv_structure(csv_path: Path) -> None:
         logger.error("CSV file not found")
         raise CSVValidationError("CSV file does not exist")
 
-    try:
-        with csv_path.open(mode="r", encoding="utf-8", newline="") as file:
-            reader = csv.reader(file)
-            header: Iterable[str] = next(reader)
-    except UnicodeDecodeError as exc:
-        logger.error("Failed to decode CSV file (encoding issue)")
-        raise CSVValidationError("Invalid CSV encoding") from exc
-    except StopIteration as exc:
-        logger.error("CSV file is empty")
-        raise CSVValidationError("CSV file is empty") from exc
-    except Exception as exc:
-        logger.exception("Unexpected error while reading CSV header")
-        raise CSVValidationError("Failed to read CSV header") from exc
+    header: Iterable[str] | None = None
+    used_encoding: str | None = None
+
+    for encoding in ("utf-8", "latin-1"):
+        try:
+            with csv_path.open(mode="r", encoding=encoding, newline="") as file:
+                reader = csv.reader(file, delimiter=";")
+                header = next(reader)
+                used_encoding = encoding
+                break
+        except UnicodeDecodeError:
+            logger.warning(
+                "Failed to decode CSV using encoding '%s'. Trying next option.",
+                encoding,
+            )
+        except StopIteration:
+            logger.error("CSV file is empty")
+            raise CSVValidationError("CSV file is empty")
+        except Exception as exc:
+            logger.exception("Unexpected error while reading CSV header")
+            raise CSVValidationError("Failed to read CSV header") from exc
+
+    if header is None:
+        logger.error("Unable to decode CSV file using supported encodings")
+        raise CSVValidationError("Unsupported CSV encoding")
+
+    logger.info("CSV decoded successfully using encoding: %s", used_encoding)
 
     header_set = {column.strip() for column in header}
 
