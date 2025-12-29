@@ -3,7 +3,7 @@
 import logging
 import os
 from enum import Enum
-from logging.handlers import TimedRotatingFileHandler
+from logging import FileHandler
 
 from .formatter import JsonFormatter
 
@@ -72,11 +72,8 @@ class LoggerHandler:
 
             formatter = JsonFormatter()
 
-            file_handler = TimedRotatingFileHandler(
+            file_handler = FileHandler(
                 full_file_path,
-                when="midnight",
-                interval=1,
-                backupCount=7,
                 encoding="utf-8",
             )
             file_handler.setFormatter(formatter)
