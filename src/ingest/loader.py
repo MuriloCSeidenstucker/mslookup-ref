@@ -1,3 +1,5 @@
+# pylint: disable=R0914:too-many-locals
+
 import csv
 from datetime import date, datetime
 from pathlib import Path
@@ -14,8 +16,6 @@ DATE_FORMAT = "%d/%m/%Y"
 MIN_YEAR = 1900
 MAX_YEAR = 2100
 
-VALID_REGISTRATION_STATUSES = {"ATIVO", "VÁLIDO"}
-
 
 def _parse_date(value: str | None) -> date | None:
     if not value:
@@ -30,6 +30,13 @@ def _parse_date(value: str | None) -> date | None:
         return None
 
     return parsed
+
+
+def _is_valid_by_expiration(expiration_date: date | None) -> bool:
+    if expiration_date is None:
+        return False
+
+    return expiration_date >= date.today()
 
 
 def load_csv(csv_path: Path) -> None:
@@ -70,6 +77,10 @@ def load_csv(csv_path: Path) -> None:
                     regulatory_category = "UNKNOWN"
                     regulatory_category_normalized = "unknown"
 
+                expiration_date = _parse_date(row.get("DATA_VENCIMENTO_REGISTRO"))
+
+                is_registration_valid = _is_valid_by_expiration(expiration_date)
+
                 drug = Drug(
                     registration_number=row.get("NUMERO_REGISTRO_PRODUTO") or None,
                     product_name=product_name,
@@ -81,10 +92,8 @@ def load_csv(csv_path: Path) -> None:
                     registration_holder=registration_holder,
                     registration_holder_normalized=registration_holder_normalized,
                     registration_status=status,
-                    registration_expiration_date=_parse_date(
-                        row.get("DATA_VENCIMENTO_REGISTRO")
-                    ),
-                    is_registration_valid=status in VALID_REGISTRATION_STATUSES,
+                    registration_expiration_date=expiration_date,
+                    is_registration_valid=is_registration_valid,
                 )
 
                 drugs.append(drug)
@@ -97,5 +106,5 @@ def load_csv(csv_path: Path) -> None:
         return
 
     logger.info("Inserting %d drugs into database", len(drugs))
-    repository.insert_drug(drugs)
+    repository.insert_drugs(drugs)
     logger.info("CSV load completed successfully")
