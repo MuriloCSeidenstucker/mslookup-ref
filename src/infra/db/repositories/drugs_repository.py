@@ -2,12 +2,13 @@ from typing import Iterable
 
 from sqlalchemy import select
 
+from src.data.interfaces.drugs_repository_interface import DrugsRepositoryInterface
 from src.domain.models.drugs import Drug
 from src.infra.db.entities.drug_entity import DrugEntity
 from src.infra.db.settings.connection import DBConnectionHandler
 
 
-class DrugsRepository:
+class DrugsRepository(DrugsRepositoryInterface):
 
     def insert_drugs(self, drugs: Iterable[Drug]) -> None:
         with DBConnectionHandler() as database:
@@ -37,7 +38,7 @@ class DrugsRepository:
                 database.session.rollback()
                 raise
 
-    def search_drugs(
+    def find_drugs(
         self,
         *,
         product_name_normalized: str,

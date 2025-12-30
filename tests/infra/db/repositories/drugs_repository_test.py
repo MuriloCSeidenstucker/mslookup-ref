@@ -95,7 +95,7 @@ def test_search_drugs_basic_query(mock_db):
 
     mock_db.execute.return_value.scalars.return_value.all.return_value = [entity]
 
-    results = repo.search_drugs(product_name_normalized="produto")
+    results = repo.find_drugs(product_name_normalized="produto")
 
     assert len(results) == 1
     assert isinstance(results[0], Drug)
@@ -107,7 +107,7 @@ def test_search_drugs_with_optional_filters(mock_db):
 
     mock_db.execute.return_value.scalars.return_value.all.return_value = []
 
-    repo.search_drugs(
+    repo.find_drugs(
         product_name_normalized="produto",
         active_ingredient_normalized="ativo",
         registration_holder_normalized="empresa",
@@ -123,6 +123,6 @@ def test_search_drugs_only_valid_default(mock_db):
 
     mock_db.execute.return_value.scalars.return_value.all.return_value = []
 
-    repo.search_drugs(product_name_normalized="produto")
+    repo.find_drugs(product_name_normalized="produto")
 
     mock_db.execute.assert_called_once()

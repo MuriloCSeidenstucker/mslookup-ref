@@ -1,6 +1,14 @@
-from src.main.server.server import app
+import uvicorn
+
+
+def main() -> None:
+    uvicorn.run(
+        "src.main.server.server:app",
+        host="0.0.0.0",
+        port=5000,
+        reload=True,
+    )
+
 
 if __name__ == "__main__":
-    HOST = "0.0.0.0"
-    PORT = 5000
-    app.run(host=HOST, port=PORT)
+    main()
