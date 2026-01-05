@@ -16,14 +16,14 @@ class DrugFinder(DrugFinderInterface):
     def find(
         self,
         *,
-        name: str,
+        product_name: str,
         active_ingredient: Optional[str] = None,
         registration_holder: Optional[str] = None,
     ) -> Dict:
-        self.__validate_input(name)
+        self.__validate_input(product_name)
 
         drugs = self.__drugs_repository.find_drugs(
-            product_name_normalized=name,
+            product_name_normalized=product_name,
             active_ingredient_normalized=active_ingredient,
             registration_holder_normalized=registration_holder,
             only_valid=True,
@@ -35,8 +35,8 @@ class DrugFinder(DrugFinderInterface):
         return self.__format_response(drugs)
 
     @classmethod
-    def __validate_input(cls, name: str) -> None:
-        if not isinstance(name, str) or not name.strip():
+    def __validate_input(cls, product_name: str) -> None:
+        if not isinstance(product_name, str) or not product_name.strip():
             raise HttpBadRequestError(
                 "O nome do medicamento é obrigatório para a busca."
             )

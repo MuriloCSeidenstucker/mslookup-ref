@@ -25,7 +25,7 @@ def make_request(query_params: dict):
 def test_validator_returns_true_for_valid_request():
     request = make_request(
         {
-            "name": "dipirona",
+            "product_name": "dipirona",
             "active_ingredient": "dipirona monoidratada",
             "registration_holder": "empresa x",
         }
@@ -39,7 +39,7 @@ def test_validator_returns_true_for_valid_request():
 def test_validator_accepts_only_required_field():
     request = make_request(
         {
-            "name": "dipirona",
+            "product_name": "dipirona",
         }
     )
 
@@ -55,14 +55,14 @@ def test_validator_accepts_only_required_field():
 def test_validator_raises_error_when_name_is_invalid(invalid_name):
     request = make_request(
         {
-            "name": invalid_name,
+            "product_name": invalid_name,
         }
     )
 
     with pytest.raises(HttpUnprocessableEntityError) as exc:
         drug_finder_validator(request)
 
-    assert "name" in str(exc.value)
+    assert "product_name" in str(exc.value)
 
 
 def test_validator_raises_error_when_name_is_missing():
@@ -71,7 +71,7 @@ def test_validator_raises_error_when_name_is_missing():
     with pytest.raises(HttpUnprocessableEntityError) as exc:
         drug_finder_validator(request)
 
-    assert "name" in str(exc.value)
+    assert "product_name" in str(exc.value)
 
 
 # =========================
@@ -89,7 +89,7 @@ def test_validator_raises_error_when_name_is_missing():
 def test_validator_raises_error_for_empty_optional_fields(field, value):
     request = make_request(
         {
-            "name": "dipirona",
+            "product_name": "dipirona",
             field: value,
         }
     )
@@ -103,14 +103,14 @@ def test_validator_raises_error_for_empty_optional_fields(field, value):
 def test_validator_raises_error_for_invalid_field_type():
     request = make_request(
         {
-            "name": 123,  # tipo inválido
+            "product_name": 123,  # tipo inválido
         }
     )
 
     with pytest.raises(HttpUnprocessableEntityError) as exc:
         drug_finder_validator(request)
 
-    assert "name" in str(exc.value)
+    assert "product_name" in str(exc.value)
 
 
 # =========================
@@ -121,7 +121,7 @@ def test_validator_raises_error_for_invalid_field_type():
 def test_validator_allows_unknown_fields():
     request = make_request(
         {
-            "name": "dipirona",
+            "product_name": "dipirona",
             "unknown_field": "qualquer valor",
         }
     )

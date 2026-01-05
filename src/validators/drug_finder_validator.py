@@ -7,7 +7,7 @@ def drug_finder_validator(request: any) -> bool:
 
     query_validator = Validator(
         {
-            "name": {
+            "product_name": {
                 "type": "string",
                 "required": True,
                 "empty": False,

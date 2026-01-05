@@ -25,7 +25,7 @@ def controller(use_case_mock):
 def http_request_with_params():
     return HttpRequest(
         query_params={
-            "name": " Dipirona ",
+            "product_name": " Dipirona ",
             "active_ingredient": " Dipirona Monoidratada ",
             "registration_holder": " Empresa X ",
         }
@@ -66,7 +66,7 @@ def test_handle_returns_http_response_success(
     assert response.body == {"data": expected_use_case_response}
 
     use_case_mock.find.assert_called_once_with(
-        name="dipirona",
+        product_name="dipirona",
         active_ingredient="dipirona monoidratada",
         registration_holder="empresa x",
     )
@@ -95,7 +95,7 @@ def test_handle_handles_missing_query_params(controller, use_case_mock, mocker):
     assert response.status_code == 200
 
     use_case_mock.find.assert_called_once_with(
-        name=None,
+        product_name=None,
         active_ingredient=None,
         registration_holder=None,
     )
@@ -115,7 +115,7 @@ def test_handle_calls_normalize_text_for_each_param(
     # Arrange
     normalize_mock = mocker.patch(
         "src.presentation.controllers.drug_finder_controller.normalize_text",
-        side_effect=["name", "ingredient", "holder"],
+        side_effect=["product_name", "ingredient", "holder"],
     )
 
     use_case_mock.find.return_value = {}

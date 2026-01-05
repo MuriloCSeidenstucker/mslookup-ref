@@ -51,7 +51,7 @@ def test_find_raises_bad_request_for_invalid_name(
     invalid_name,
 ):
     with pytest.raises(HttpBadRequestError) as exc:
-        drug_finder.find(name=invalid_name)
+        drug_finder.find(product_name=invalid_name)
 
     assert "obrigatório" in str(exc.value)
 
@@ -69,7 +69,7 @@ def test_find_calls_repository_with_expected_arguments(
 
     with pytest.raises(HttpNotFoundError):
         drug_finder.find(
-            name="dipirona",
+            product_name="dipirona",
             active_ingredient="dipirona",
             registration_holder="empresa",
         )
@@ -89,7 +89,7 @@ def test_find_raises_not_found_when_repository_returns_empty_list(
     repository_mock.find_drugs.return_value = []
 
     with pytest.raises(HttpNotFoundError) as exc:
-        drug_finder.find(name="dipirona")
+        drug_finder.find(product_name="dipirona")
 
     assert "Nenhum registro ANVISA encontrado" in str(exc.value)
 
@@ -106,7 +106,7 @@ def test_find_returns_formatted_response(
 ):
     repository_mock.find_drugs.return_value = [sample_drug]
 
-    result = drug_finder.find(name="dipirona")
+    result = drug_finder.find(product_name="dipirona")
 
     assert result["type"] == "DrugRegistrations"
     assert result["count"] == 1
@@ -134,6 +134,6 @@ def test_find_formats_none_expiration_date(
     sample_drug.registration_expiration_date = None
     repository_mock.find_drugs.return_value = [sample_drug]
 
-    result = drug_finder.find(name="dipirona")
+    result = drug_finder.find(product_name="dipirona")
 
     assert result["attributes"][0]["expiration_date"] is None
