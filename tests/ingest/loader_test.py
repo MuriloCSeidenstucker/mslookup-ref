@@ -1,3 +1,5 @@
+# pylint: disable=W0212:protected-access
+
 import csv
 from datetime import date
 from pathlib import Path

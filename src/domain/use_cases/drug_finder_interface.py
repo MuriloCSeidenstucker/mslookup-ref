@@ -10,7 +10,7 @@ class DrugFinderInterface(ABC):
     def find(
         self,
         *,
-        name: str,
+        product_name: str,
         active_ingredient: Optional[str] = None,
         registration_holder: Optional[str] = None,
     ) -> Dict:

@@ -1,3 +1,5 @@
+# pylint: disable=W0707:raise-missing-from
+
 import csv
 from pathlib import Path
 from typing import Iterable
