@@ -1,6 +1,6 @@
 # mslookup
 
-![Python](https://img.shields.io/badge/python-3.12+-blue.svg)
+![Python](https://img.shields.io/badge/python-3.12.x-blue.svg)
 ![Poetry](https://img.shields.io/badge/dependencies-poetry-blue.svg)
 ![Architecture](https://img.shields.io/badge/architecture-clean%20architecture-brightgreen.svg)
 ![Database](https://img.shields.io/badge/database-sqlite-lightgrey.svg)
