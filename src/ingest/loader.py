@@ -16,6 +16,8 @@ DATE_FORMAT = "%d/%m/%Y"
 MIN_YEAR = 1900
 MAX_YEAR = 2100
 
+INVALID_STATUSES = {"INATIVO", "CADUCO/CANCELADO"}
+
 
 def _parse_date(value: str | None) -> date | None:
     if not value:
@@ -32,11 +34,8 @@ def _parse_date(value: str | None) -> date | None:
     return parsed
 
 
-def _is_valid_by_expiration(expiration_date: date | None) -> bool:
-    if expiration_date is None:
-        return False
-
-    return expiration_date >= date.today()
+def _is_valid_by_status(status: str) -> bool:
+    return status not in INVALID_STATUSES
 
 
 def load_csv(csv_path: Path) -> None:
@@ -79,7 +78,7 @@ def load_csv(csv_path: Path) -> None:
 
                 expiration_date = _parse_date(row.get("DATA_VENCIMENTO_REGISTRO"))
 
-                is_registration_valid = _is_valid_by_expiration(expiration_date)
+                is_registration_valid = _is_valid_by_status(status)
 
                 drug = Drug(
                     registration_number=row.get("NUMERO_REGISTRO_PRODUTO") or None,
@@ -102,7 +101,7 @@ def load_csv(csv_path: Path) -> None:
                 logger.exception("Failed to process row %d. Row skipped.", row_number)
 
     if not drugs:
-        logger.warning("No valid drugs found to insert.")
+        logger.warning("No drugs found to insert.")
         return
 
     logger.info("Inserting %d drugs into database", len(drugs))

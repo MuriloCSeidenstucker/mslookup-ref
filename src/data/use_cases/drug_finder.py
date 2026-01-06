@@ -53,7 +53,6 @@ class DrugFinder(DrugFinderInterface):
                     "active_ingredient": drug.active_ingredient,
                     "registration_holder": drug.registration_holder,
                     "regulatory_category": drug.regulatory_category,
-                    "registration_status": drug.registration_status,
                     "expiration_date": (
                         drug.registration_expiration_date.isoformat()
                         if drug.registration_expiration_date

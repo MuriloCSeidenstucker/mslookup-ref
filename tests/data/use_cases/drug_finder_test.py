@@ -122,7 +122,6 @@ def test_find_returns_formatted_response(
     assert item["active_ingredient"] == sample_drug.active_ingredient
     assert item["registration_holder"] == sample_drug.registration_holder
     assert item["regulatory_category"] == sample_drug.regulatory_category
-    assert item["registration_status"] == sample_drug.registration_status
     assert item["expiration_date"] == "2030-12-31"
 
 

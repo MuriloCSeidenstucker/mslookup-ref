@@ -52,66 +52,76 @@ def test_parse_date_invalid_returns_none(value):
 
 
 # =========================
-# _is_valid_by_expiration
+# _is_valid_by_status
 # =========================
 
 
-def test_is_valid_by_expiration_none():
-    assert module._is_valid_by_expiration(None) is False
+@pytest.mark.parametrize(
+    "status",
+    ["INATIVO", "CADUCO/CANCELADO"],
+)
+def test_is_valid_by_status_invalid(status):
+    assert module._is_valid_by_status(status) is False
 
 
-def test_is_valid_by_expiration_future_date(mocker):
-    mocker.patch.object(module, "date", wraps=date)
-    module.date.today = lambda: date(2024, 1, 1)
-
-    assert module._is_valid_by_expiration(date(2025, 1, 1)) is True
-
-
-def test_is_valid_by_expiration_past_date(mocker):
-    mocker.patch.object(module, "date", wraps=date)
-    module.date.today = lambda: date(2024, 1, 1)
-
-    assert module._is_valid_by_expiration(date(2023, 12, 31)) is False
+@pytest.mark.parametrize(
+    "status",
+    ["ATIVO", "VÁLIDO", "", "QUALQUER_COISA"],
+)
+def test_is_valid_by_status_valid(status):
+    assert module._is_valid_by_status(status) is True
 
 
 # =========================
-# load_csv
+# load_csv - caminho feliz
 # =========================
 
 
-def test_load_csv_happy_path(mocker, tmp_path):
-    # Arrange
+def test_load_csv_inserts_valid_and_invalid_statuses(mocker, tmp_path):
     mocker.patch(
         "src.ingest.loader.normalize_text",
         side_effect=lambda x: x.lower() if x else None,
     )
 
     repo_cls = mocker.patch("src.ingest.loader.DrugsRepository")
-    repo_instance = repo_cls.return_value
+    repo = repo_cls.return_value
 
     rows = [
         {
-            "NUMERO_REGISTRO_PRODUTO": "123",
+            "NUMERO_REGISTRO_PRODUTO": "1",
             "NOME_PRODUTO": "Produto A",
             "PRINCIPIO_ATIVO": "Ativo A",
             "CATEGORIA_REGULATORIA": "Categoria",
             "EMPRESA_DETENTORA_REGISTRO": "Empresa",
+            "SITUACAO_REGISTRO": "INATIVO",
+            "DATA_VENCIMENTO_REGISTRO": "01/01/2030",
+        },
+        {
+            "NUMERO_REGISTRO_PRODUTO": "2",
+            "NOME_PRODUTO": "Produto B",
+            "PRINCIPIO_ATIVO": "Ativo B",
+            "CATEGORIA_REGULATORIA": "Categoria",
+            "EMPRESA_DETENTORA_REGISTRO": "Empresa",
             "SITUACAO_REGISTRO": "ATIVO",
-            "DATA_VENCIMENTO_REGISTRO": "01/01/2099",
-        }
+            "DATA_VENCIMENTO_REGISTRO": "01/01/2030",
+        },
     ]
 
     csv_path = create_csv(tmp_path, rows)
 
-    # Act
     module.load_csv(csv_path)
 
-    # Assert
-    repo_instance.insert_drugs.assert_called_once()
-    drugs = repo_instance.insert_drugs.call_args.args[0]
+    repo.insert_drugs.assert_called_once()
+    drugs = repo.insert_drugs.call_args.args[0]
 
-    assert len(drugs) == 1
-    assert drugs[0].is_registration_valid is True
+    assert len(drugs) == 2
+    assert drugs[0].is_registration_valid is False
+    assert drugs[1].is_registration_valid is True
+
+
+# =========================
+# Fallback regulatory_category
+# =========================
 
 
 def test_load_csv_sets_unknown_regulatory_category(mocker, tmp_path):
@@ -131,26 +141,28 @@ def test_load_csv_sets_unknown_regulatory_category(mocker, tmp_path):
             "CATEGORIA_REGULATORIA": "EMPTY",
             "EMPRESA_DETENTORA_REGISTRO": "Empresa",
             "SITUACAO_REGISTRO": "ATIVO",
-            "DATA_VENCIMENTO_REGISTRO": "01/01/2099",
+            "DATA_VENCIMENTO_REGISTRO": "01/01/2030",
         }
     ]
 
     csv_path = create_csv(tmp_path, rows)
 
-    # Act
     module.load_csv(csv_path)
 
-    # Assert
     drug = repo_cls.return_value.insert_drugs.call_args.args[0][0]
     assert drug.regulatory_category == "UNKNOWN"
     assert drug.regulatory_category_normalized == "unknown"
 
 
-def test_load_csv_invalid_row_is_skipped(mocker, tmp_path):
-    # Arrange
+# =========================
+# Linhas inválidas
+# =========================
+
+
+def test_load_csv_skips_invalid_rows(mocker, tmp_path):
     mocker.patch(
         "src.ingest.loader.normalize_text",
-        return_value=None,  # força falha de validação
+        return_value=None,
     )
 
     repo_cls = mocker.patch("src.ingest.loader.DrugsRepository")
@@ -163,21 +175,18 @@ def test_load_csv_invalid_row_is_skipped(mocker, tmp_path):
             "CATEGORIA_REGULATORIA": "Categoria",
             "EMPRESA_DETENTORA_REGISTRO": "Empresa",
             "SITUACAO_REGISTRO": "ATIVO",
-            "DATA_VENCIMENTO_REGISTRO": "01/01/2099",
+            "DATA_VENCIMENTO_REGISTRO": "01/01/2030",
         }
     ]
 
     csv_path = create_csv(tmp_path, rows)
 
-    # Act
     module.load_csv(csv_path)
 
-    # Assert
     repo_cls.return_value.insert_drugs.assert_not_called()
 
 
 def test_load_csv_no_valid_rows_does_not_insert(mocker, tmp_path):
-    # Arrange
     mocker.patch("src.ingest.loader.normalize_text", return_value=None)
     repo_cls = mocker.patch("src.ingest.loader.DrugsRepository")
 
@@ -195,8 +204,6 @@ def test_load_csv_no_valid_rows_does_not_insert(mocker, tmp_path):
 
     csv_path = create_csv(tmp_path, rows)
 
-    # Act
     module.load_csv(csv_path)
 
-    # Assert
     repo_cls.return_value.insert_drugs.assert_not_called()
