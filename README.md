@@ -1,13 +1,13 @@
 # mslookup
 
-![Python](https://img.shields.io/badge/python-3.12-blue.svg)
-![Poetry](https://img.shields.io/badge/dependencies-poetry-blue.svg)
+[![Python](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/)
+[![Poetry](https://img.shields.io/endpoint?url=https://python-poetry.org/badge/v0.json)](https://python-poetry.org/)
 ![Architecture](https://img.shields.io/badge/architecture-clean%20architecture-brightgreen.svg)
-![Database](https://img.shields.io/badge/database-sqlite-lightgrey.svg)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688.svg)
+[![Database](https://img.shields.io/badge/database-sqlite-lightgrey.svg)](https://sqlite.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688.svg)](https://fastapi.tiangolo.com/)
 [![Code Style: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 [![Linting: Pylint](https://img.shields.io/badge/linting-pylint-yellowgreen)](https://github.com/pylint-dev/pylint)
-![License](https://img.shields.io/badge/license-MIT-green.svg)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/MuriloCSeidenstucker/mslookup-ref/blob/main/LICENSE)
 
 API para consulta de registros de medicamentos da ANVISA a partir de dados públicos.
 
