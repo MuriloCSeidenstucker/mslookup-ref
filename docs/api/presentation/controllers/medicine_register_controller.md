@@ -1,1 +1,0 @@
-::: mslookup_ref.presentation.controllers.medicine_register_controller.MedicineRegisterController
