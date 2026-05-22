@@ -218,3 +218,7 @@ $RECYCLE.BIN/
 
 *.db
 raw_data/
+
+# Agents files
+.agent/
+.antigravitycli/
