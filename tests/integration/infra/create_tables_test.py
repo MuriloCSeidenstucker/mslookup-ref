@@ -14,11 +14,14 @@ def test_create_tables_success(mocker: MockerFixture):
     mock_create_engine = mocker.patch("src.infra.db.settings.connection.create_engine")
     mock_create_engine.return_value = engine
 
-    create_tables()
+    try:
+        create_tables()
 
-    inspector = inspect(engine)
-    tables = inspector.get_table_names()
-    assert "drugs" in tables
+        inspector = inspect(engine)
+        tables = inspector.get_table_names()
+        assert "drugs" in tables
+    finally:
+        engine.dispose()
 
 
 def test_create_tables_failure(mocker: MockerFixture):
@@ -31,8 +34,11 @@ def test_create_tables_failure(mocker: MockerFixture):
     )
     mock_create_all.side_effect = SQLAlchemyError("Erro simulado no banco")
 
-    with pytest.raises(SQLAlchemyError):
-        create_tables()
+    try:
+        with pytest.raises(SQLAlchemyError):
+            create_tables()
+    finally:
+        engine.dispose()
 
 
 def test_create_tables_main(mocker: MockerFixture):
@@ -43,7 +49,7 @@ def test_create_tables_main(mocker: MockerFixture):
         "src.infra.db.settings.base.Base.metadata.create_all"
     )
 
-    runpy.run_module("src.infra.db.settings.create_tables", run_name="__main__")
+    runpy.run_path(r"src/infra/db/settings/create_tables.py", run_name="__main__")
 
     mock_connection.assert_called_once()
     mock_create_all.assert_called_once()
