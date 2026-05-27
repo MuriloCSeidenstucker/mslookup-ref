@@ -1,14 +1,16 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Query
+from sqlalchemy.orm import Session
 
+from src.infra.db.settings.connection import get_session
 from src.repositories.drugs_repository import DrugsRepository
 from src.schemas.drug_schemas import DrugResponseSchema
 from src.services.drug_finder_service import DrugFinderService
 
 
-def get_drug_finder_service():
-    repository = DrugsRepository()
+def get_drug_finder_service(session: Annotated[Session, Depends(get_session)]):
+    repository = DrugsRepository(session)
     return DrugFinderService(repository)
 
 

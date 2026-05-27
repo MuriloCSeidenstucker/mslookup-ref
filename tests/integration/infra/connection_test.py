@@ -1,25 +1,16 @@
 # pylint: disable=W0212:protected-access
 
-from pytest_mock import MockerFixture
-from sqlalchemy import create_engine, text
+from contextlib import contextmanager
 
-from src.infra.db.settings.connection import DBConnectionHandler
+from sqlalchemy import text
+
+from src.infra.db.settings.connection import get_session
 
 
-def test_db_connection_handler(mocker: MockerFixture):
-    engine = create_engine("sqlite:///:memory:")
+def test_db_connection():
+    with contextmanager(get_session)() as session:
+        response = session.execute(text("SELECT 1"))
+        result = response.scalar()
 
-    mock_create_engine = mocker.patch("src.infra.db.settings.connection.create_engine")
-    mock_create_engine.return_value = engine
-
-    try:
-        with DBConnectionHandler() as handler:
-            response = handler.session.execute(text("SELECT 1"))
-            result = response.scalar()
-
-            assert result == 1
-            assert handler.session.is_active is True
-
-        assert handler.session._transaction is None
-    finally:
-        engine.dispose()
+        assert result == 1
+        assert session.is_active is True

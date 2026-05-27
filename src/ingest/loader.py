@@ -1,10 +1,12 @@
 # pylint: disable=R0914:too-many-locals
 
 import csv
+from contextlib import contextmanager
 from datetime import date, datetime
 from pathlib import Path
 
 from src.core.models.drugs import Drug
+from src.infra.db.settings.connection import get_session
 from src.logging.logger_handler import LevelName, LoggerHandler
 from src.repositories.drugs_repository import DrugsRepository
 from src.utils.normalizer import normalize_text
@@ -41,7 +43,6 @@ def _is_valid_by_status(status: str) -> bool:
 def load_csv(csv_path: Path) -> None:
     logger.info("Starting CSV load")
 
-    repository = DrugsRepository()
     drugs: list[Drug] = []
 
     with csv_path.open(mode="r", encoding="latin-1", newline="") as file:
@@ -105,5 +106,7 @@ def load_csv(csv_path: Path) -> None:
         return
 
     logger.info("Inserting %d drugs into database", len(drugs))
-    repository.insert_drugs(drugs)
+    with contextmanager(get_session)() as session:
+        repository = DrugsRepository(session)
+        repository.insert_drugs(drugs)
     logger.info("CSV load completed successfully")
