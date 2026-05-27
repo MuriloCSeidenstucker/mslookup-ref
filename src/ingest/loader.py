@@ -4,10 +4,10 @@ import csv
 from datetime import date, datetime
 from pathlib import Path
 
-from src.domain.models.drugs import Drug
-from src.infra.db.repositories.drugs_repository import DrugsRepository
-from src.ingest.normalizer import normalize_text
+from src.core.models.drugs import Drug
 from src.logging.logger_handler import LevelName, LoggerHandler
+from src.repositories.drugs_repository import DrugsRepository
+from src.utils.normalizer import normalize_text
 
 logger_handler = LoggerHandler(LevelName.DEBUG)
 logger = logger_handler.get_logger()

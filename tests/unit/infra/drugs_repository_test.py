@@ -3,8 +3,8 @@ from unittest.mock import MagicMock
 import pytest
 from pytest_mock import MockerFixture
 
-from src.domain.models.drugs import Drug
-from src.infra.db.repositories.drugs_repository import DrugsRepository
+from src.core.models.drugs import Drug
+from src.repositories.drugs_repository import DrugsRepository
 
 # =========================
 # Fixtures
@@ -36,9 +36,7 @@ def mock_db(mocker: MockerFixture):
     db = MagicMock()
     db.session = session
 
-    db_handler = mocker.patch(
-        "src.infra.db.repositories.drugs_repository.DBConnectionHandler"
-    )
+    db_handler = mocker.patch("src.repositories.drugs_repository.DBConnectionHandler")
     db_handler.return_value.__enter__.return_value = db
     db_handler.return_value.__exit__.return_value = None
 

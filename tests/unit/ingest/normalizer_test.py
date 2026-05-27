@@ -1,4 +1,4 @@
-from src.ingest.normalizer import normalize_text
+from src.utils.normalizer import normalize_text
 
 
 def test_normalize_text_basic():
