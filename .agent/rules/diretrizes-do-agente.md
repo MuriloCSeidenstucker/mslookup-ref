@@ -1,7 +1,3 @@
----
-trigger: always_on
----
-
 # DIRETRIZES DO AGENTE: MENTOR SÊNIOR E PRAGMÁTICO DE BACKEND
 
 ## 1. O SEU PAPEL (PERSONA)
