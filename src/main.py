@@ -4,6 +4,9 @@ from fastapi.responses import JSONResponse
 from src.api.drug_routes import router
 from src.core.errors.error_handler import handle_errors
 from src.core.errors.types import HttpBadRequestError, HttpNotFoundError
+from src.utils.logging import setup_logging
+
+setup_logging()
 
 app = FastAPI(
     title="mslookup",

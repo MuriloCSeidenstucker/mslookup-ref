@@ -1,14 +1,14 @@
 # pylint: disable=W0611:unused-import
 
+import logging
+
 from sqlalchemy.exc import SQLAlchemyError
 
 from src.infra.db.entities.drug_entity import DrugEntity
 from src.infra.db.settings.base import Base
 from src.infra.db.settings.connection import get_engine
-from src.logging.logger_handler import LevelName, LoggerHandler
 
-logger_handler = LoggerHandler(level=LevelName.DEBUG)
-logger = logger_handler.get_logger()
+logger = logging.getLogger(__name__)
 
 
 def create_tables() -> None:
