@@ -18,9 +18,9 @@ class DrugEntity(Base):
         autoincrement=True,
     )
 
-    registration_number: Mapped[str | None] = mapped_column(
+    registration_number: Mapped[str] = mapped_column(
         String,
-        nullable=True,
+        nullable=False,
     )
 
     product_name: Mapped[str] = mapped_column(

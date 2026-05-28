@@ -5,7 +5,7 @@ from typing import Optional
 
 @dataclass
 class Drug:
-    registration_number: Optional[str]
+    registration_number: str
 
     product_name: str
     product_name_normalized: str
