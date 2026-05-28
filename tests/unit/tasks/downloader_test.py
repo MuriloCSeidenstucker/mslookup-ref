@@ -1,7 +1,7 @@
 import pytest
 import requests
 
-import src.ingest.downloader as module
+import src.tasks.downloader as module
 
 # =========================
 # Helpers
@@ -25,11 +25,11 @@ def test_download_success(mocker, tmp_path):
     destination = tmp_path / "anvisa.csv"
 
     mocker.patch(
-        "src.ingest.downloader.requests.get",
+        "src.tasks.downloader.requests.get",
         return_value=FakeResponse(status_code=200, content=b"csv-content"),
     )
 
-    logger = mocker.patch("src.ingest.downloader.logger")
+    logger = mocker.patch("src.tasks.downloader.logger")
 
     # Act
     result = module.download_anvisa_csv(url, destination)
@@ -49,7 +49,7 @@ def test_download_creates_parent_directories(mocker, tmp_path):
     destination = tmp_path / "nested" / "dir" / "file.csv"
 
     mocker.patch(
-        "src.ingest.downloader.requests.get",
+        "src.tasks.downloader.requests.get",
         return_value=FakeResponse(),
     )
 
@@ -64,11 +64,11 @@ def test_download_creates_parent_directories(mocker, tmp_path):
 def test_download_request_exception_raises_download_error(mocker, tmp_path):
     # Arrange
     mocker.patch(
-        "src.ingest.downloader.requests.get",
+        "src.tasks.downloader.requests.get",
         side_effect=requests.RequestException("network error"),
     )
 
-    logger = mocker.patch("src.ingest.downloader.logger")
+    logger = mocker.patch("src.tasks.downloader.logger")
 
     # Act / Assert
     with pytest.raises(module.DownloadError) as exc:
@@ -85,11 +85,11 @@ def test_download_request_exception_raises_download_error(mocker, tmp_path):
 def test_download_invalid_status_code_raises_error(mocker, tmp_path, status_code):
     # Arrange
     mocker.patch(
-        "src.ingest.downloader.requests.get",
+        "src.tasks.downloader.requests.get",
         return_value=FakeResponse(status_code=status_code, content=b"error"),
     )
 
-    logger = mocker.patch("src.ingest.downloader.logger")
+    logger = mocker.patch("src.tasks.downloader.logger")
 
     # Act / Assert
     with pytest.raises(module.DownloadError) as exc:
@@ -108,11 +108,11 @@ def test_download_invalid_status_code_raises_error(mocker, tmp_path, status_code
 def test_download_empty_content_raises_error(mocker, tmp_path):
     # Arrange
     mocker.patch(
-        "src.ingest.downloader.requests.get",
+        "src.tasks.downloader.requests.get",
         return_value=FakeResponse(status_code=200, content=b""),
     )
 
-    logger = mocker.patch("src.ingest.downloader.logger")
+    logger = mocker.patch("src.tasks.downloader.logger")
 
     # Act / Assert
     with pytest.raises(module.DownloadError) as exc:
@@ -128,7 +128,7 @@ def test_download_empty_content_raises_error(mocker, tmp_path):
 def test_download_passes_timeout_and_verify_flag(mocker, tmp_path):
     # Arrange
     get_mock = mocker.patch(
-        "src.ingest.downloader.requests.get",
+        "src.tasks.downloader.requests.get",
         return_value=FakeResponse(),
     )
 

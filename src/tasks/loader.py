@@ -1,18 +1,17 @@
 # pylint: disable=R0914:too-many-locals
 
 import csv
+import logging
 from contextlib import contextmanager
 from datetime import date, datetime
 from pathlib import Path
 
 from src.core.models.drugs import Drug
 from src.infra.db.settings.connection import get_session
-from src.logging.logger_handler import LevelName, LoggerHandler
 from src.repositories.drugs_repository import DrugsRepository
 from src.utils.normalizer import normalize_text
 
-logger_handler = LoggerHandler(LevelName.DEBUG)
-logger = logger_handler.get_logger()
+logger = logging.getLogger(__name__)
 
 DATE_FORMAT = "%d/%m/%Y"
 MIN_YEAR = 1900
@@ -50,6 +49,7 @@ def load_csv(csv_path: Path) -> None:
 
         for row_number, row in enumerate(reader, start=2):
             try:
+                registration_number = (row.get("NUMERO_REGISTRO_PRODUTO") or "").strip()
                 product_name = (row.get("NOME_PRODUTO") or "").strip()
                 regulatory_category = (row.get("CATEGORIA_REGULATORIA") or "").strip()
                 registration_holder = (
@@ -62,6 +62,9 @@ def load_csv(csv_path: Path) -> None:
                 regulatory_category_normalized = normalize_text(regulatory_category)
                 registration_holder_normalized = normalize_text(registration_holder)
                 active_ingredient_normalized = normalize_text(active_ingredient)
+
+                if not registration_number:
+                    raise ValueError("Registration number is empty")
 
                 if not product_name_normalized:
                     raise ValueError("Normalized product_name is empty")
@@ -82,7 +85,7 @@ def load_csv(csv_path: Path) -> None:
                 is_registration_valid = _is_valid_by_status(status)
 
                 drug = Drug(
-                    registration_number=row.get("NUMERO_REGISTRO_PRODUTO") or None,
+                    registration_number=registration_number,
                     product_name=product_name,
                     product_name_normalized=product_name_normalized,
                     active_ingredient=active_ingredient,

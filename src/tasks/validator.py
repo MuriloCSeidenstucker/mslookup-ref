@@ -1,13 +1,11 @@
 # pylint: disable=W0707:raise-missing-from
 
 import csv
+import logging
 from pathlib import Path
 from typing import Iterable
 
-from src.logging.logger_handler import LevelName, LoggerHandler
-
-logger_handler = LoggerHandler(LevelName.DEBUG)
-logger = logger_handler.get_logger()
+logger = logging.getLogger(__name__)
 
 
 class CSVValidationError(Exception):

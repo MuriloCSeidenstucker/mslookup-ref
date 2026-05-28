@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from src.ingest.validator import (
+from src.tasks.validator import (
     REQUIRED_COLUMNS,
     CSVValidationError,
     validate_csv_structure,

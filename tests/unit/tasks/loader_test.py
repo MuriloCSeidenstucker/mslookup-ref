@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-import src.ingest.loader as module
+import src.tasks.loader as module
 
 # =========================
 # Helpers
@@ -79,11 +79,11 @@ def test_is_valid_by_status_valid(status):
 
 def test_load_csv_inserts_valid_and_invalid_statuses(mocker, tmp_path):
     mocker.patch(
-        "src.ingest.loader.normalize_text",
+        "src.tasks.loader.normalize_text",
         side_effect=lambda x: x.lower() if x else None,
     )
 
-    repo_cls = mocker.patch("src.ingest.loader.DrugsRepository")
+    repo_cls = mocker.patch("src.tasks.loader.DrugsRepository")
     repo = repo_cls.return_value
 
     rows = [
@@ -127,11 +127,11 @@ def test_load_csv_inserts_valid_and_invalid_statuses(mocker, tmp_path):
 def test_load_csv_sets_unknown_regulatory_category(mocker, tmp_path):
     # Arrange
     mocker.patch(
-        "src.ingest.loader.normalize_text",
+        "src.tasks.loader.normalize_text",
         side_effect=lambda x: "" if x == "EMPTY" else x.lower(),
     )
 
-    repo_cls = mocker.patch("src.ingest.loader.DrugsRepository")
+    repo_cls = mocker.patch("src.tasks.loader.DrugsRepository")
 
     rows = [
         {
@@ -161,11 +161,11 @@ def test_load_csv_sets_unknown_regulatory_category(mocker, tmp_path):
 
 def test_load_csv_skips_invalid_rows(mocker, tmp_path):
     mocker.patch(
-        "src.ingest.loader.normalize_text",
+        "src.tasks.loader.normalize_text",
         return_value=None,
     )
 
-    repo_cls = mocker.patch("src.ingest.loader.DrugsRepository")
+    repo_cls = mocker.patch("src.tasks.loader.DrugsRepository")
 
     rows = [
         {
@@ -187,8 +187,8 @@ def test_load_csv_skips_invalid_rows(mocker, tmp_path):
 
 
 def test_load_csv_no_valid_rows_does_not_insert(mocker, tmp_path):
-    mocker.patch("src.ingest.loader.normalize_text", return_value=None)
-    repo_cls = mocker.patch("src.ingest.loader.DrugsRepository")
+    mocker.patch("src.tasks.loader.normalize_text", return_value=None)
+    repo_cls = mocker.patch("src.tasks.loader.DrugsRepository")
 
     rows = [
         {

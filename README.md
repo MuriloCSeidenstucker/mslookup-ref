@@ -86,7 +86,7 @@ poetry run python .\src\infra\db\settings\create_tables.py
 
 ### 3. Baixar e processar os dados da ANVISA
 ```bash
-poetry run python .\src\ingest\ingest_anvisa.py
+poetry run python .\src\tasks\anvisa_ingestion.py
 ```
 
 Isso irá:

@@ -1,11 +1,9 @@
+import logging
 from pathlib import Path
 
 import requests
 
-from src.logging import LevelName, LoggerHandler
-
-logger_handler = LoggerHandler(LevelName.DEBUG)
-logger = logger_handler.get_logger()
+logger = logging.getLogger(__name__)
 
 
 class DownloadError(Exception):
