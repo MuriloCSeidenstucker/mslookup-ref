@@ -1,8 +1,13 @@
+import os
+
+from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
+load_dotenv()
+db_url = os.getenv("DATABASE_URL", "sqlite:///mslookup.db")
 engine = create_engine(
-    "sqlite:///mslookup.db",
+    db_url,
     pool_pre_ping=True,
 )
 
