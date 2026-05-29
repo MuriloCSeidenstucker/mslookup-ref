@@ -8,10 +8,6 @@ import pytest
 
 import src.tasks.loader as module
 
-# =========================
-# Helpers
-# =========================
-
 
 def create_csv(tmp_path: Path, rows: list[dict]) -> Path:
     path = tmp_path / "test.csv"
@@ -24,11 +20,6 @@ def create_csv(tmp_path: Path, rows: list[dict]) -> Path:
         writer.writeheader()
         writer.writerows(rows)
     return path
-
-
-# =========================
-# _parse_date
-# =========================
 
 
 @pytest.mark.parametrize(
@@ -51,11 +42,6 @@ def test_parse_date_invalid_returns_none(value):
     assert module._parse_date(value) is None
 
 
-# =========================
-# _is_valid_by_status
-# =========================
-
-
 @pytest.mark.parametrize(
     "status",
     ["INATIVO", "CADUCO/CANCELADO"],
@@ -70,11 +56,6 @@ def test_is_valid_by_status_invalid(status):
 )
 def test_is_valid_by_status_valid(status):
     assert module._is_valid_by_status(status) is True
-
-
-# =========================
-# load_csv - caminho feliz
-# =========================
 
 
 def test_load_csv_inserts_valid_and_invalid_statuses(mocker, tmp_path):
@@ -119,13 +100,7 @@ def test_load_csv_inserts_valid_and_invalid_statuses(mocker, tmp_path):
     assert drugs[1].is_registration_valid is True
 
 
-# =========================
-# Fallback regulatory_category
-# =========================
-
-
 def test_load_csv_sets_unknown_regulatory_category(mocker, tmp_path):
-    # Arrange
     mocker.patch(
         "src.tasks.loader.normalize_text",
         side_effect=lambda x: "" if x == "EMPTY" else x.lower(),
@@ -152,11 +127,6 @@ def test_load_csv_sets_unknown_regulatory_category(mocker, tmp_path):
     drug = repo_cls.return_value.insert_drugs.call_args.args[0][0]
     assert drug.regulatory_category == "UNKNOWN"
     assert drug.regulatory_category_normalized == "unknown"
-
-
-# =========================
-# Linhas inválidas
-# =========================
 
 
 def test_load_csv_skips_invalid_rows(mocker, tmp_path):
