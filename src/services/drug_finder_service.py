@@ -25,6 +25,7 @@ class DrugFinderService:
             active_ingredient_normalized=active_ingredient_normalized,
             registration_holder_normalized=registration_holder_normalized,
             regulatory_category_normalized=regulatory_category_normalized,
+            only_valid=True,
         )
 
         if not drugs:

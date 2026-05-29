@@ -33,6 +33,7 @@ def test_find_drugs_success(mocker: MockerFixture):
         active_ingredient_normalized=None,
         registration_holder_normalized=None,
         regulatory_category_normalized=None,
+        only_valid=True,
     )
     assert response["count"] == 1
     assert response["data"][0]["product_name"] == "AMOXICILINA"
