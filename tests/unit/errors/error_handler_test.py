@@ -2,12 +2,12 @@ import json
 
 from fastapi.responses import JSONResponse
 
-from src.core.errors.error_handler import handle_errors
-from src.core.errors.types import HttpBadRequestError, HttpNotFoundError
+from src.api.errors.error_handler import handle_errors
+from src.core.errors.domain_errors import DrugNotFoundError, InvalidFilterError
 
 
 def test_handle_errors_http_bad_request():
-    error = HttpBadRequestError("Bad Request Message")
+    error = InvalidFilterError("Bad Request Message")
     response = handle_errors(error)
 
     assert isinstance(response, JSONResponse)
@@ -23,7 +23,7 @@ def test_handle_errors_http_bad_request():
 
 
 def test_handle_errors_http_not_found():
-    error = HttpNotFoundError("Not Found Message")
+    error = DrugNotFoundError("Not Found Message")
     response = handle_errors(error)
 
     assert isinstance(response, JSONResponse)
@@ -48,7 +48,7 @@ def test_handle_errors_generic_exception():
         "errors": [
             {
                 "title": "Internal Server Error",
-                "detail": "Unexpected system failure",
+                "detail": "Ocorreu um erro interno no servidor. Tente novamente mais tarde.",
             }
         ]
     }

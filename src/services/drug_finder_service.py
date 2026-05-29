@@ -1,4 +1,4 @@
-from src.core.errors.types.http_not_found import HttpNotFoundError
+from src.core.errors.domain_errors import DrugNotFoundError
 from src.core.models.drugs import Drug
 from src.repositories.drugs_repository import DrugsRepository
 from src.utils.normalizer import normalize_text
@@ -28,7 +28,7 @@ class DrugFinderService:
         )
 
         if not drugs:
-            raise HttpNotFoundError("Nenhum registro ANVISA encontrado.")
+            raise DrugNotFoundError("Nenhum registro ANVISA encontrado.")
 
         return self.__format_response(drugs)
 
